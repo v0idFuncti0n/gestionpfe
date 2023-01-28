@@ -1,0 +1,26 @@
+package com.gestionpfe.model.responses;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gestionpfe.model.AppUserRole;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class SupervisorResponse {
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String department;
+    @Enumerated(EnumType.STRING)
+    @JsonProperty("role")
+    private AppUserRole appUserRole;
+}
