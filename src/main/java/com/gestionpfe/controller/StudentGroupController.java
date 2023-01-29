@@ -44,4 +44,12 @@ public class StudentGroupController {
 
         return new ResponseEntity<>(studentGroupResponse, HttpStatus.CREATED);
     }
+
+    @PostMapping(path = "/join/{group-id}")
+    public ResponseEntity<StudentGroupResponse> joinGroup(@PathVariable(name = "group-id") Long studentGroupId, @RequestBody StudentGroupRequest request) {
+        StudentGroupResponse studentGroupResponse = new StudentGroupResponse();
+        StudentGroup studentGroup = studentGroupService.joinGroup(studentGroupId, request);
+        BeanUtils.copyProperties(studentGroup, studentGroupResponse);
+        return new ResponseEntity<>(studentGroupResponse, HttpStatus.OK);
+    }
 }

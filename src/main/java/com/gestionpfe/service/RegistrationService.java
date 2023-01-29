@@ -50,7 +50,8 @@ public class RegistrationService {
             //Since, we are running the spring boot application in localhost, we are hardcoding the
             //url of the server. We are creating a POST request with token param
             String link = "http://localhost:8090/api/v1/registration/confirm?token=" + tokenForNewUser;
-            emailSender.sendEmail(request.getEmail(), buildEmail(request.getFirstName(), link));
+            // TODO: remove comment
+            //emailSender.sendEmail(request.getEmail(), buildEmail(request.getFirstName(), link));
             return supervisor;
         } else {
             throw new UserException(String.format("Email %s, not valid", request.getEmail()));
@@ -72,7 +73,8 @@ public class RegistrationService {
             //Since, we are running the spring boot application in localhost, we are hardcoding the
             //url of the server. We are creating a POST request with token param
             String link = "http://localhost:8090/api/v1/registration/confirm?token=" + tokenForNewUser;
-            emailSender.sendEmail(request.getEmail(), buildEmail(request.getFirstName(), link));
+            // TODO: remove comment
+            //emailSender.sendEmail(request.getEmail(), buildEmail(request.getFirstName(), link));
             return student;
         } else {
             throw new UserException(String.format("Email %s, not valid", request.getEmail()));

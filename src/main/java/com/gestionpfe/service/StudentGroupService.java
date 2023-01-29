@@ -70,7 +70,6 @@ public class StudentGroupService {
                 });
             });
         });
-        log.error("{}", groupsAssignedToStudent.get());
 
         ArrayList<AppUser> students = new ArrayList<>();
         students.add(student.get());
@@ -84,7 +83,55 @@ public class StudentGroupService {
     }
 
     public StudentGroup joinGroup(Long studentGroupId, StudentGroupRequest studentGroupRequest) {
-        return null;
+        Optional<AppUser> studentOptional = appUserRepository.findById(studentGroupRequest.getCurrentStudentId());
+        if(studentOptional.isEmpty()) {
+            throw new UserException(String.format("student id %d not found!", studentGroupRequest.getCurrentStudentId()));
+        }
+        AppUser student = studentOptional.get();
+
+        Optional<PFESubject> pfeSubjectOptional = pfeSubjectRepository.findById(studentGroupRequest.getPfeSubjectId());
+        if(pfeSubjectOptional.isEmpty()) {
+            throw new PFEStageException(String.format("pfe subject id %d not found", studentGroupRequest.getPfeSubjectId()));
+        }
+
+        Optional<StudentGroup> studentGroupOptional = studentGroupRepository.findById(studentGroupId);
+        if(studentGroupOptional.isEmpty()) {
+            throw new StudentGroupException(String.format("student group id %d not found", studentGroupId));
+        }
+
+        PFESubject pfeSubject = pfeSubjectOptional.get();
+        pfeSubject.getStudentGroups().forEach(studentGroup -> {
+            studentGroup.getStudents().forEach(s -> {
+                if(s.getId().equals(studentGroupRequest.getCurrentStudentId())){
+                    throw new StudentGroupException(String.format("this student's id %d already in a group in this pfe subject!", s.getId()));
+                }
+            });
+        });
+
+        AppUser supervisor = pfeSubject.getSupervisor();
+        AtomicInteger groupsAssignedToStudent = new AtomicInteger(1);
+        supervisor.getPfeSubjects().forEach(ps -> {
+            ps.getStudentGroups().forEach(sg -> {
+                sg.getStudents().forEach(s -> {
+                    if(s.getId().equals(studentGroupRequest.getCurrentStudentId())) {
+                        groupsAssignedToStudent.incrementAndGet();
+                    }
+                    if(groupsAssignedToStudent.get() > MAX_PFE_SUBJECT_APPLY_PER_SUPERVISOR) {
+                        throw new StudentGroupException(String.format("this student %d can't be assigned to more than 3 groups", studentGroupRequest.getCurrentStudentId()));
+                    }
+                });
+            });
+        });
+
+        StudentGroup studentGroup = studentGroupOptional.get();
+        if(studentGroup.getStudents().size() >= pfeSubject.getGroupNumber()) {
+            throw new StudentGroupException(String.format("this student %d can't be assigned to a full group", studentGroupRequest.getCurrentStudentId()));
+        }
+
+        studentGroup.getStudents().add(student);
+        studentGroupRepository.save(studentGroup);
+
+        return studentGroup;
     }
 
     public List<StudentGroup> findByPFESubject(Long pfeSubjectId) {
