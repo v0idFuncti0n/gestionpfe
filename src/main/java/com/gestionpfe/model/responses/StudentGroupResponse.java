@@ -3,6 +3,7 @@ package com.gestionpfe.model.responses;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.gestionpfe.enums.StudentGroupState;
 import com.gestionpfe.model.AppUser;
 import com.gestionpfe.model.PFESubject;
 import lombok.AllArgsConstructor;
@@ -27,4 +28,6 @@ public class StudentGroupResponse {
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
     @JsonIdentityReference(alwaysAsId=true)
     private PFESubject pfeSubject;
+
+    private StudentGroupState studentGroupState;
 }

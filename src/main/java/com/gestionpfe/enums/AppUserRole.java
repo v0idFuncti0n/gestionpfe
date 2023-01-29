@@ -1,4 +1,4 @@
-package com.gestionpfe.model;
+package com.gestionpfe.enums;
 
 public enum AppUserRole {
     STUDENT,

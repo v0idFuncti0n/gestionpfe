@@ -1,7 +1,7 @@
 package com.gestionpfe.startup;
 
 import com.gestionpfe.model.AppUser;
-import com.gestionpfe.model.AppUserRole;
+import com.gestionpfe.enums.AppUserRole;
 import com.gestionpfe.model.Domain;
 import com.gestionpfe.repository.AppUserRepository;
 import com.gestionpfe.repository.DomainRepository;

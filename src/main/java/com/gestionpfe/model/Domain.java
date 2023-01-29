@@ -1,5 +1,6 @@
 package com.gestionpfe.model;
 
+import com.gestionpfe.enums.AppUserRole;
 import lombok.*;
 
 import javax.persistence.*;

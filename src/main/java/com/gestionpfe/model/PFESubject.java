@@ -28,7 +28,7 @@ public class PFESubject {
 
     private boolean published;
 
-    @OneToMany(mappedBy="pfeSubject")
+    @OneToMany(mappedBy="pfeSubject", cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @ToString.Exclude
     private List<StudentGroup> studentGroups;
 }

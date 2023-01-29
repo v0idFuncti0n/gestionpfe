@@ -1,6 +1,6 @@
 package com.gestionpfe.security.validators;
 
-import com.gestionpfe.model.AppUserRole;
+import com.gestionpfe.enums.AppUserRole;
 import com.gestionpfe.model.Domain;
 import com.gestionpfe.repository.DomainRepository;
 import org.springframework.beans.factory.annotation.Autowired;

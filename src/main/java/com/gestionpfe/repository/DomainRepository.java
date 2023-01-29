@@ -1,6 +1,6 @@
 package com.gestionpfe.repository;
 
-import com.gestionpfe.model.AppUserRole;
+import com.gestionpfe.enums.AppUserRole;
 import com.gestionpfe.model.Domain;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

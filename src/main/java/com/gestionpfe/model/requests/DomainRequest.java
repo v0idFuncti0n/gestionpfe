@@ -1,7 +1,7 @@
 package com.gestionpfe.model.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gestionpfe.model.AppUserRole;
+import com.gestionpfe.enums.AppUserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

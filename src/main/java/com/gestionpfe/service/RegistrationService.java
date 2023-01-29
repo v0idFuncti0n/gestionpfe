@@ -4,14 +4,13 @@ import com.gestionpfe.email.EmailSender;
 import com.gestionpfe.exceptions.TokenException;
 import com.gestionpfe.exceptions.UserException;
 import com.gestionpfe.model.AppUser;
-import com.gestionpfe.model.AppUserRole;
+import com.gestionpfe.enums.AppUserRole;
 import com.gestionpfe.model.requests.StudentRegistrationRequest;
 import com.gestionpfe.model.requests.SupervisorRegistrationRequest;
 import com.gestionpfe.security.validators.StudentEmailValidator;
 import com.gestionpfe.model.ConfirmationToken;
 import com.gestionpfe.security.token.ConfirmationTokenService;
 import com.gestionpfe.security.validators.SupervisorEmailValidator;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -36,6 +36,20 @@ public class StudentGroupController {
         return new ResponseEntity<>(studentGroupResponses, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/completed-groups/{pfe-subject-id}")
+    public ResponseEntity<List<StudentGroupResponse>> getCompletedStudentGroupsByPFESubject(@PathVariable("pfe-subject-id") Long pfeSubjectId) {
+        List<StudentGroupResponse> studentGroupResponses = new ArrayList<>();
+        List<StudentGroup> studentGroups = studentGroupService.getCompletedStudentGroupsByPFESubject(pfeSubjectId);
+        studentGroups.forEach(studentGroup -> {
+            StudentGroupResponse studentGroupResponse = new StudentGroupResponse();
+            BeanUtils.copyProperties(studentGroup, studentGroupResponse);
+            studentGroupResponses.add(studentGroupResponse);
+        });
+
+        return new ResponseEntity<>(studentGroupResponses, HttpStatus.OK);
+    }
+
+
     @PostMapping
     public ResponseEntity<StudentGroupResponse> createStudentGroup(@RequestBody StudentGroupRequest studentGroupRequest) {
         StudentGroupResponse studentGroupResponse = new StudentGroupResponse();
@@ -49,6 +63,14 @@ public class StudentGroupController {
     public ResponseEntity<StudentGroupResponse> joinGroup(@PathVariable(name = "group-id") Long studentGroupId, @RequestBody StudentGroupRequest request) {
         StudentGroupResponse studentGroupResponse = new StudentGroupResponse();
         StudentGroup studentGroup = studentGroupService.joinGroup(studentGroupId, request);
+        BeanUtils.copyProperties(studentGroup, studentGroupResponse);
+        return new ResponseEntity<>(studentGroupResponse, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/accept/{group-id}")
+    public ResponseEntity<StudentGroupResponse> acceptGroup(@PathVariable(name = "group-id") Long studentGroupId) {
+        StudentGroupResponse studentGroupResponse = new StudentGroupResponse();
+        StudentGroup studentGroup = studentGroupService.acceptGroup(studentGroupId);
         BeanUtils.copyProperties(studentGroup, studentGroupResponse);
         return new ResponseEntity<>(studentGroupResponse, HttpStatus.OK);
     }
