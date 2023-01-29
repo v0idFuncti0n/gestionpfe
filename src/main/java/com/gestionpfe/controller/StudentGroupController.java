@@ -1,6 +1,5 @@
 package com.gestionpfe.controller;
 
-import com.gestionpfe.model.AppUser;
 import com.gestionpfe.model.StudentGroup;
 import com.gestionpfe.model.requests.StudentGroupRequest;
 import com.gestionpfe.model.responses.StudentGroupResponse;
@@ -71,6 +70,14 @@ public class StudentGroupController {
     public ResponseEntity<StudentGroupResponse> acceptGroup(@PathVariable(name = "group-id") Long studentGroupId) {
         StudentGroupResponse studentGroupResponse = new StudentGroupResponse();
         StudentGroup studentGroup = studentGroupService.acceptGroup(studentGroupId);
+        BeanUtils.copyProperties(studentGroup, studentGroupResponse);
+        return new ResponseEntity<>(studentGroupResponse, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/refuse/{group-id}")
+    public ResponseEntity<StudentGroupResponse> refuseGroup(@PathVariable(name = "group-id") Long studentGroupId) {
+        StudentGroupResponse studentGroupResponse = new StudentGroupResponse();
+        StudentGroup studentGroup = studentGroupService.refuseGroup(studentGroupId);
         BeanUtils.copyProperties(studentGroup, studentGroupResponse);
         return new ResponseEntity<>(studentGroupResponse, HttpStatus.OK);
     }

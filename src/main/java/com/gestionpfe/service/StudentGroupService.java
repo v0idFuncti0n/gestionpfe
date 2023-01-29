@@ -59,14 +59,16 @@ public class StudentGroupService {
         AtomicInteger groupsAssignedToStudent = new AtomicInteger(1);
         supervisor.getPfeSubjects().forEach(ps -> {
             ps.getStudentGroups().forEach(sg -> {
-                sg.getStudents().forEach(s -> {
-                    if (s.getId().equals(studentGroupRequest.getCurrentStudentId())) {
-                        groupsAssignedToStudent.incrementAndGet();
-                    }
-                    if (groupsAssignedToStudent.get() > MAX_PFE_SUBJECT_APPLY_PER_SUPERVISOR) {
-                        throw new StudentGroupException(String.format("this student %d can't be assigned to more than 3 groups", studentGroupRequest.getCurrentStudentId()));
-                    }
-                });
+                if (!sg.getStudentGroupState().equals(StudentGroupState.REJECTED)) {
+                    sg.getStudents().forEach(s -> {
+                        if (s.getId().equals(studentGroupRequest.getCurrentStudentId())) {
+                            groupsAssignedToStudent.incrementAndGet();
+                        }
+                        if (groupsAssignedToStudent.get() > MAX_PFE_SUBJECT_APPLY_PER_SUPERVISOR) {
+                            throw new StudentGroupException(String.format("this student %d can't be assigned to more than 3 groups", studentGroupRequest.getCurrentStudentId()));
+                        }
+                    });
+                }
             });
         });
 
@@ -111,14 +113,16 @@ public class StudentGroupService {
         AtomicInteger groupsAssignedToStudent = new AtomicInteger(1);
         supervisor.getPfeSubjects().forEach(ps -> {
             ps.getStudentGroups().forEach(sg -> {
-                sg.getStudents().forEach(s -> {
-                    if (s.getId().equals(studentGroupRequest.getCurrentStudentId())) {
-                        groupsAssignedToStudent.incrementAndGet();
-                    }
-                    if (groupsAssignedToStudent.get() > MAX_PFE_SUBJECT_APPLY_PER_SUPERVISOR) {
-                        throw new StudentGroupException(String.format("this student %d can't be assigned to more than 3 groups", studentGroupRequest.getCurrentStudentId()));
-                    }
-                });
+                if (!sg.getStudentGroupState().equals(StudentGroupState.REJECTED)) {
+                    sg.getStudents().forEach(s -> {
+                        if (s.getId().equals(studentGroupRequest.getCurrentStudentId())) {
+                            groupsAssignedToStudent.incrementAndGet();
+                        }
+                        if (groupsAssignedToStudent.get() > MAX_PFE_SUBJECT_APPLY_PER_SUPERVISOR) {
+                            throw new StudentGroupException(String.format("this student %d can't be assigned to more than 3 groups", studentGroupRequest.getCurrentStudentId()));
+                        }
+                    });
+                }
             });
         });
 
@@ -173,12 +177,11 @@ public class StudentGroupService {
 
         for (AppUser student : new ArrayList<>(studentGroup.getStudents())) {
             for (StudentGroup sg : new ArrayList<>(student.getStudentGroup())) {
-                if(!Objects.equals(sg.getId(), studentGroup.getId())) {
+                if (!Objects.equals(sg.getId(), studentGroup.getId())) {
                     sg.getStudents().remove(student);
                     studentGroupRepository.save(sg);
                 }
-                log.error("{}", sg.getStudents().isEmpty());
-                if(sg.getStudents().isEmpty()) {
+                if (sg.getStudents().isEmpty()) {
                     studentGroupRepository.deleteById(sg.getId());
                 }
             }
@@ -187,6 +190,18 @@ public class StudentGroupService {
         studentGroup.setStudentGroupState(StudentGroupState.ACCEPTED);
         studentGroupRepository.save(studentGroup);
 
+        return studentGroup;
+    }
+
+    public StudentGroup refuseGroup(Long studentGroupId) {
+        Optional<StudentGroup> studentGroupOptional = studentGroupRepository.findById(studentGroupId);
+        if (studentGroupOptional.isEmpty()) {
+            throw new StudentGroupException(String.format("student group id %d not found", studentGroupId));
+        }
+
+        StudentGroup studentGroup = studentGroupOptional.get();
+        studentGroup.setStudentGroupState(StudentGroupState.REJECTED);
+        studentGroupRepository.save(studentGroup);
         return studentGroup;
     }
 }
