@@ -1,17 +1,16 @@
-package com.gestionpfe.model.requests;
+package com.gestionpfe.model.requests.rendezvous;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentGroupRequest {
-    // TODO: validations
+public class RendezvousStudentDeclineRequest {
 
-    private Long currentStudentId;
+    // TODO: validations
+    private String decliningMessage;
 }

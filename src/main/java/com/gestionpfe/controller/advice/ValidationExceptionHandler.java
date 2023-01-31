@@ -69,10 +69,14 @@ public class ValidationExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST, studentGroupException.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
-    //TODO: remove comment
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ErrorResponse> generalErrorHandler(Exception exception) {
-//        return new ResponseEntity<>(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), Arrays.toString(exception.getStackTrace()), exception), HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
+    @ExceptionHandler(RendezvousException.class)
+    public ResponseEntity<ErrorResponse> pfeStageErrorHandler(RendezvousException rendezvousException) {
+        return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST, rendezvousException.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> generalErrorHandler(Exception exception) {
+        return new ResponseEntity<>(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), Arrays.toString(exception.getStackTrace()), exception), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 }

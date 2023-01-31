@@ -31,4 +31,7 @@ public class StudentGroup {
     @Enumerated(EnumType.STRING)
     private StudentGroupState studentGroupState;
 
+    @OneToMany(mappedBy="studentGroup")
+    private List<Rendezvous> rendezvous;
+
 }

@@ -49,19 +49,27 @@ public class StudentGroupController {
     }
 
 
-    @PostMapping
-    public ResponseEntity<StudentGroupResponse> createStudentGroup(@RequestBody StudentGroupRequest studentGroupRequest) {
+    @PostMapping(path = "/pfe-subject/{pfe-subject-id}")
+    public ResponseEntity<StudentGroupResponse> createStudentGroup(@PathVariable(name = "pfe-subject-id") Long pfeSubjectId, @RequestBody StudentGroupRequest studentGroupRequest) {
         StudentGroupResponse studentGroupResponse = new StudentGroupResponse();
-        StudentGroup studentGroup = studentGroupService.save(studentGroupRequest);
+        StudentGroup studentGroup = studentGroupService.save(pfeSubjectId, studentGroupRequest);
         BeanUtils.copyProperties(studentGroup, studentGroupResponse);
 
         return new ResponseEntity<>(studentGroupResponse, HttpStatus.CREATED);
     }
 
-    @PostMapping(path = "/join/{group-id}")
-    public ResponseEntity<StudentGroupResponse> joinGroup(@PathVariable(name = "group-id") Long studentGroupId, @RequestBody StudentGroupRequest request) {
+    @PostMapping(path = "/pfe-subject/{pfe-subject-id}/join/{group-id}")
+    public ResponseEntity<StudentGroupResponse> joinGroup(@PathVariable(name = "group-id") Long studentGroupId, @PathVariable(name = "pfe-subject-id") Long pfeSubjectId, @RequestBody StudentGroupRequest request) {
         StudentGroupResponse studentGroupResponse = new StudentGroupResponse();
-        StudentGroup studentGroup = studentGroupService.joinGroup(studentGroupId, request);
+        StudentGroup studentGroup = studentGroupService.joinGroup(studentGroupId, pfeSubjectId, request);
+        BeanUtils.copyProperties(studentGroup, studentGroupResponse);
+        return new ResponseEntity<>(studentGroupResponse, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/remove-student/{group-id}")
+    public ResponseEntity<StudentGroupResponse> removeStudentFromGroup(@PathVariable(name = "group-id") Long studentGroupId, @RequestBody StudentGroupRequest request) {
+        StudentGroupResponse studentGroupResponse = new StudentGroupResponse();
+        StudentGroup studentGroup = studentGroupService.removeStudentFromStudentGroup(studentGroupId, request);
         BeanUtils.copyProperties(studentGroup, studentGroupResponse);
         return new ResponseEntity<>(studentGroupResponse, HttpStatus.OK);
     }

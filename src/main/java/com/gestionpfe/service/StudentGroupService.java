@@ -35,16 +35,24 @@ public class StudentGroupService {
         this.appUserRepository = appUserRepository;
     }
 
-    public StudentGroup save(StudentGroupRequest studentGroupRequest) {
-        Optional<AppUser> student = appUserRepository.findById(studentGroupRequest.getCurrentStudentId());
-        if (student.isEmpty()) {
+    public StudentGroup save(Long pfeSubjectId, StudentGroupRequest studentGroupRequest) {
+        Optional<AppUser> studentOptional = appUserRepository.findById(studentGroupRequest.getCurrentStudentId());
+        if (studentOptional.isEmpty()) {
             throw new UserException(String.format("student id %d not found!", studentGroupRequest.getCurrentStudentId()));
         }
 
-        Optional<PFESubject> pfeSubjectOptional = pfeSubjectRepository.findById(studentGroupRequest.getPfeSubjectId());
+        AppUser student = studentOptional.get();
+
+        Optional<PFESubject> pfeSubjectOptional = pfeSubjectRepository.findById(pfeSubjectId);
         if (pfeSubjectOptional.isEmpty()) {
-            throw new PFEStageException(String.format("pfe subject id %d not found", studentGroupRequest.getPfeSubjectId()));
+            throw new PFEStageException(String.format("pfe subject id %d not found", pfeSubjectId));
         }
+
+        student.getStudentGroup().forEach(studentGroup -> {
+            if(studentGroup.getStudentGroupState().equals(StudentGroupState.ACCEPTED)) {
+                throw new StudentGroupException(String.format("student id %d already in a accepted group", student.getId()));
+            }
+        });
 
         PFESubject pfeSubject = pfeSubjectOptional.get();
         pfeSubject.getStudentGroups().forEach(studentGroup -> {
@@ -73,7 +81,7 @@ public class StudentGroupService {
         });
 
         ArrayList<AppUser> students = new ArrayList<>();
-        students.add(student.get());
+        students.add(student);
 
         StudentGroup studentGroup = new StudentGroup();
         studentGroup.setStudents(students);
@@ -83,22 +91,28 @@ public class StudentGroupService {
         return studentGroupRepository.save(studentGroup);
     }
 
-    public StudentGroup joinGroup(Long studentGroupId, StudentGroupRequest studentGroupRequest) {
+    public StudentGroup joinGroup(Long studentGroupId, Long pfeSubjectId, StudentGroupRequest studentGroupRequest) {
         Optional<AppUser> studentOptional = appUserRepository.findById(studentGroupRequest.getCurrentStudentId());
         if (studentOptional.isEmpty()) {
             throw new UserException(String.format("student id %d not found!", studentGroupRequest.getCurrentStudentId()));
         }
         AppUser student = studentOptional.get();
 
-        Optional<PFESubject> pfeSubjectOptional = pfeSubjectRepository.findById(studentGroupRequest.getPfeSubjectId());
+        Optional<PFESubject> pfeSubjectOptional = pfeSubjectRepository.findById(pfeSubjectId);
         if (pfeSubjectOptional.isEmpty()) {
-            throw new PFEStageException(String.format("pfe subject id %d not found", studentGroupRequest.getPfeSubjectId()));
+            throw new PFEStageException(String.format("pfe subject id %d not found", pfeSubjectId));
         }
 
         Optional<StudentGroup> studentGroupOptional = studentGroupRepository.findById(studentGroupId);
         if (studentGroupOptional.isEmpty()) {
             throw new StudentGroupException(String.format("student group id %d not found", studentGroupId));
         }
+
+        student.getStudentGroup().forEach(studentGroup -> {
+            if(studentGroup.getStudentGroupState().equals(StudentGroupState.ACCEPTED)) {
+                throw new StudentGroupException(String.format("student id %d already in a accepted group", student.getId()));
+            }
+        });
 
         PFESubject pfeSubject = pfeSubjectOptional.get();
         pfeSubject.getStudentGroups().forEach(studentGroup -> {
@@ -133,6 +147,34 @@ public class StudentGroupService {
 
         studentGroup.getStudents().add(student);
         studentGroupRepository.save(studentGroup);
+
+        return studentGroup;
+    }
+
+    public StudentGroup removeStudentFromStudentGroup(Long studentGroupId, StudentGroupRequest studentGroupRequest) {
+        Optional<StudentGroup> studentGroupOptional = studentGroupRepository.findById(studentGroupId);
+        if (studentGroupOptional.isEmpty()) {
+            throw new StudentGroupException(String.format("student group id %d not found", studentGroupId));
+        }
+
+        StudentGroup studentGroup = studentGroupOptional.get();
+        if(studentGroup.getStudentGroupState().equals(StudentGroupState.ACCEPTED)) {
+            throw new StudentGroupException(String.format("student %d cannot be removed from and accepted group", studentGroupRequest.getCurrentStudentId()));
+        }
+
+        Optional<AppUser> studentOptional = appUserRepository.findById(studentGroupRequest.getCurrentStudentId());
+        if (studentOptional.isEmpty()) {
+            throw new UserException(String.format("student id %d not found!", studentGroupRequest.getCurrentStudentId()));
+        }
+
+        AppUser student = studentOptional.get();
+
+        studentGroup.getStudents().remove(student);
+        studentGroupRepository.save(studentGroup);
+
+        if (studentGroup.getStudents().isEmpty()) {
+            studentGroupRepository.deleteById(studentGroup.getId());
+        }
 
         return studentGroup;
     }
