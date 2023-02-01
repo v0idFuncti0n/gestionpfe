@@ -1,7 +1,8 @@
 package com.gestionpfe.controller;
 
 import com.gestionpfe.model.StudentGroup;
-import com.gestionpfe.model.requests.StudentGroupRequest;
+import com.gestionpfe.model.requests.studentgroup.StudentGroupDriveUrlRequest;
+import com.gestionpfe.model.requests.studentgroup.StudentGroupRequest;
 import com.gestionpfe.model.responses.StudentGroupResponse;
 import com.gestionpfe.service.StudentGroupService;
 import org.springframework.beans.BeanUtils;
@@ -86,6 +87,22 @@ public class StudentGroupController {
     public ResponseEntity<StudentGroupResponse> refuseGroup(@PathVariable(name = "group-id") Long studentGroupId) {
         StudentGroupResponse studentGroupResponse = new StudentGroupResponse();
         StudentGroup studentGroup = studentGroupService.refuseGroup(studentGroupId);
+        BeanUtils.copyProperties(studentGroup, studentGroupResponse);
+        return new ResponseEntity<>(studentGroupResponse, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "{group-id}/add-drive/")
+    public ResponseEntity<StudentGroupResponse> addDriveUrl(@PathVariable(name = "group-id") Long studentGroupId, @RequestBody StudentGroupDriveUrlRequest request) {
+        StudentGroupResponse studentGroupResponse = new StudentGroupResponse();
+        StudentGroup studentGroup = studentGroupService.addDriveUrl(studentGroupId, request);
+        BeanUtils.copyProperties(studentGroup, studentGroupResponse);
+        return new ResponseEntity<>(studentGroupResponse, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "{group-id}/publish-drive-link/")
+    public ResponseEntity<StudentGroupResponse> publishDriveUrl(@PathVariable(name = "group-id") Long studentGroupId) {
+        StudentGroupResponse studentGroupResponse = new StudentGroupResponse();
+        StudentGroup studentGroup = studentGroupService.publishDriveUrl(studentGroupId);
         BeanUtils.copyProperties(studentGroup, studentGroupResponse);
         return new ResponseEntity<>(studentGroupResponse, HttpStatus.OK);
     }

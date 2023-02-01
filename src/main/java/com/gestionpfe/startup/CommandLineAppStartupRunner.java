@@ -38,7 +38,7 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
     private void createDefaultSupervisorUsers() {
         AppUser supervisor = new AppUser("Youssef",
                 "Bajm3a",
-                "youssef.bajm3a@uae.ac.ma",
+                "lakchouchanas@gmail.com",
                 passwordEncoder.encode("password"),
                 "Informatique",
                 AppUserRole.SUPERVISOR,

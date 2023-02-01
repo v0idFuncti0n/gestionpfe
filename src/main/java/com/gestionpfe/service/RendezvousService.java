@@ -1,5 +1,6 @@
 package com.gestionpfe.service;
 
+import com.gestionpfe.email.EmailService;
 import com.gestionpfe.enums.RendezvousState;
 import com.gestionpfe.enums.StudentGroupState;
 import com.gestionpfe.exceptions.RendezvousException;
@@ -25,24 +26,25 @@ public class RendezvousService {
     private final RendezvousRepository rendezvousRepository;
     private final StudentGroupRepository studentGroupRepository;
 
+    private final EmailService emailService;
 
     @Autowired
-    public RendezvousService(RendezvousRepository rendezvousRepository, StudentGroupRepository studentGroupRepository) {
+    public RendezvousService(RendezvousRepository rendezvousRepository, StudentGroupRepository studentGroupRepository, EmailService emailService) {
         this.rendezvousRepository = rendezvousRepository;
         this.studentGroupRepository = studentGroupRepository;
+        this.emailService = emailService;
     }
 
-    public List<Rendezvous> getAllRendezvousByStudentGroup(Long studentGroupId){
+    public List<Rendezvous> getAllRendezvousByStudentGroup(Long studentGroupId) {
         Optional<StudentGroup> studentGroupOptional = studentGroupRepository.findById(studentGroupId);
         if (studentGroupOptional.isEmpty()) {
             throw new StudentGroupException(String.format("student group id %d not found", studentGroupId));
         }
 
         StudentGroup studentGroup = studentGroupOptional.get();
-        //TODO: enable this check
-//        if (!studentGroup.getStudentGroupState().equals(StudentGroupState.ACCEPTED)) {
-//            throw new StudentGroupException(String.format("student group id %d not accepted to make this request", studentGroupId));
-//        }
+        if (!studentGroup.getStudentGroupState().equals(StudentGroupState.ACCEPTED)) {
+            throw new StudentGroupException(String.format("student group id %d not accepted to make this request", studentGroupId));
+        }
 
         return studentGroup.getRendezvous();
     }
@@ -65,6 +67,17 @@ public class RendezvousService {
         rendezvous.setDecliningMessage(null);
         rendezvous.setRendezvousState(RendezvousState.PENDING);
         rendezvous.setStudentGroup(studentGroup);
+
+        emailService.sendEmail(
+                studentGroup.getPfeSubject().getSupervisor().getEmail(),
+                EmailService.buildNewRendezvousRequestHasBeenCreatedEmail(studentGroup,
+                        studentGroup.getPfeSubject().getSubject(),
+                        studentGroup.getPfeSubject().getSupervisor().getFirstName(),
+                        studentGroup.getPfeSubject().getSupervisor().getLastName(),
+                        rendezvous.getRequest()
+                ),
+                EmailService.NEW_GROUP_REQUESTED_A_RENDEZVOUS
+        );
 
         rendezvousRepository.save(rendezvous);
         return rendezvous;
@@ -91,6 +104,17 @@ public class RendezvousService {
         rendezvous.setRendezvous(request.getRendezvous());
         rendezvous.setRendezvousState(RendezvousState.WAITING_FOR_VALIDATION);
 
+        studentGroup.getStudents().forEach(student -> {
+            emailService.sendEmail(student.getEmail(), EmailService.buildRendezvousHasBeenUpdatedEmail(student.getFirstName(),
+                    student.getLastName(),
+                    studentGroup,
+                    studentGroup.getPfeSubject().getSubject(),
+                    studentGroup.getPfeSubject().getSupervisor().getFirstName(),
+                    studentGroup.getPfeSubject().getSupervisor().getLastName(),
+                    rendezvous.getRendezvous()),EmailService.RENDEZVOUS_HAS_BEEN_VALIDATED
+            );
+        });
+
         rendezvousRepository.save(rendezvous);
         return rendezvous;
     }
@@ -112,15 +136,26 @@ public class RendezvousService {
         }
 
         Rendezvous rendezvous = rendezvousOptional.get();
-        if(rendezvous.getRendezvousState().equals(RendezvousState.PENDING)) {
+        if (rendezvous.getRendezvousState().equals(RendezvousState.PENDING)) {
             throw new RendezvousException(String.format("rendezvous id %d can't be accepted while still in validation", rendezvousId));
         }
 
-        if(rendezvous.getRendezvousState().equals(RendezvousState.REJECTED)) {
+        if (rendezvous.getRendezvousState().equals(RendezvousState.REJECTED)) {
             throw new RendezvousException(String.format("rendezvous id %d already rejected", rendezvousId));
         }
 
         rendezvous.setRendezvousState(RendezvousState.ACCEPTED);
+
+        emailService.sendEmail(
+                studentGroup.getPfeSubject().getSupervisor().getEmail(),
+                EmailService.buildRendezvousRequestHasBeenAcceptedEmail(studentGroup,
+                        studentGroup.getPfeSubject().getSubject(),
+                        studentGroup.getPfeSubject().getSupervisor().getFirstName(),
+                        studentGroup.getPfeSubject().getSupervisor().getLastName(),
+                        rendezvous.getRendezvous()
+                ),
+                EmailService.RENDEZVOUS_HAS_BEEN_ACCEPTED
+        );
 
         rendezvousRepository.save(rendezvous);
         return rendezvous;
@@ -143,16 +178,28 @@ public class RendezvousService {
         }
 
         Rendezvous rendezvous = rendezvousOptional.get();
-        if(rendezvous.getRendezvousState().equals(RendezvousState.PENDING)) {
+        if (rendezvous.getRendezvousState().equals(RendezvousState.PENDING)) {
             throw new RendezvousException(String.format("rendezvous id %d can't be declined while still in validation", rendezvousId));
         }
 
-        if(rendezvous.getRendezvousState().equals(RendezvousState.ACCEPTED)) {
+        if (rendezvous.getRendezvousState().equals(RendezvousState.ACCEPTED)) {
             throw new RendezvousException(String.format("rendezvous id %d already accepted", rendezvousId));
         }
 
         rendezvous.setDecliningMessage(request.getDecliningMessage());
         rendezvous.setRendezvousState(RendezvousState.REJECTED);
+
+        emailService.sendEmail(
+                studentGroup.getPfeSubject().getSupervisor().getEmail(),
+                EmailService.buildRendezvousRequestHasBeenRejectedEmail(studentGroup,
+                        studentGroup.getPfeSubject().getSubject(),
+                        studentGroup.getPfeSubject().getSupervisor().getFirstName(),
+                        studentGroup.getPfeSubject().getSupervisor().getLastName(),
+                        rendezvous.getDecliningMessage(),
+                        rendezvous.getRendezvous()
+                ),
+                EmailService.RENDEZVOUS_HAS_BEEN_REJECTED
+        );
 
         rendezvousRepository.save(rendezvous);
         return rendezvous;

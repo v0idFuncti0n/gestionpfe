@@ -30,4 +30,8 @@ public class StudentGroupResponse {
     private PFESubject pfeSubject;
 
     private StudentGroupState studentGroupState;
+
+    private String driveUrl;
+
+    private boolean isDriveUrlPublished;
 }

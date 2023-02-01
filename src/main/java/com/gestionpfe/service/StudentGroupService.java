@@ -1,5 +1,7 @@
 package com.gestionpfe.service;
 
+import com.gestionpfe.email.EmailService;
+import com.gestionpfe.enums.AppUserRole;
 import com.gestionpfe.enums.StudentGroupState;
 import com.gestionpfe.exceptions.PFEStageException;
 import com.gestionpfe.exceptions.StudentGroupException;
@@ -7,11 +9,13 @@ import com.gestionpfe.exceptions.UserException;
 import com.gestionpfe.model.AppUser;
 import com.gestionpfe.model.PFESubject;
 import com.gestionpfe.model.StudentGroup;
-import com.gestionpfe.model.requests.StudentGroupRequest;
+import com.gestionpfe.model.requests.studentgroup.StudentGroupDriveUrlRequest;
+import com.gestionpfe.model.requests.studentgroup.StudentGroupRequest;
 import com.gestionpfe.repository.AppUserRepository;
 import com.gestionpfe.repository.PFESubjectRepository;
 import com.gestionpfe.repository.StudentGroupRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -29,10 +33,14 @@ public class StudentGroupService {
 
     private final AppUserRepository appUserRepository;
 
-    public StudentGroupService(PFESubjectRepository pfeSubjectRepository, StudentGroupRepository studentGroupRepository, AppUserRepository appUserRepository) {
+    private final EmailService emailService;
+
+    @Autowired
+    public StudentGroupService(PFESubjectRepository pfeSubjectRepository, StudentGroupRepository studentGroupRepository, AppUserRepository appUserRepository, EmailService emailService) {
         this.pfeSubjectRepository = pfeSubjectRepository;
         this.studentGroupRepository = studentGroupRepository;
         this.appUserRepository = appUserRepository;
+        this.emailService = emailService;
     }
 
     public StudentGroup save(Long pfeSubjectId, StudentGroupRequest studentGroupRequest) {
@@ -49,7 +57,7 @@ public class StudentGroupService {
         }
 
         student.getStudentGroup().forEach(studentGroup -> {
-            if(studentGroup.getStudentGroupState().equals(StudentGroupState.ACCEPTED)) {
+            if (studentGroup.getStudentGroupState().equals(StudentGroupState.ACCEPTED)) {
                 throw new StudentGroupException(String.format("student id %d already in a accepted group", student.getId()));
             }
         });
@@ -87,6 +95,8 @@ public class StudentGroupService {
         studentGroup.setStudents(students);
         studentGroup.setPfeSubject(pfeSubject);
         studentGroup.setStudentGroupState(StudentGroupState.PENDING);
+        studentGroup.setDriveUrl(null);
+        studentGroup.setDriveUrlPublished(false);
 
         return studentGroupRepository.save(studentGroup);
     }
@@ -109,7 +119,7 @@ public class StudentGroupService {
         }
 
         student.getStudentGroup().forEach(studentGroup -> {
-            if(studentGroup.getStudentGroupState().equals(StudentGroupState.ACCEPTED)) {
+            if (studentGroup.getStudentGroupState().equals(StudentGroupState.ACCEPTED)) {
                 throw new StudentGroupException(String.format("student id %d already in a accepted group", student.getId()));
             }
         });
@@ -158,7 +168,7 @@ public class StudentGroupService {
         }
 
         StudentGroup studentGroup = studentGroupOptional.get();
-        if(studentGroup.getStudentGroupState().equals(StudentGroupState.ACCEPTED)) {
+        if (studentGroup.getStudentGroupState().equals(StudentGroupState.ACCEPTED)) {
             throw new StudentGroupException(String.format("student %d cannot be removed from and accepted group", studentGroupRequest.getCurrentStudentId()));
         }
 
@@ -229,6 +239,20 @@ public class StudentGroupService {
             }
         }
 
+        studentGroup.getStudents().forEach(student -> {
+            emailService.sendEmail(student.getEmail(), EmailService.buildGroupHasBeenAcceptedEmail(
+                            student.getFirstName(),
+                            student.getLastName(),
+                            studentGroup.getPfeSubject().getSubject(),
+                            studentGroup.getPfeSubject().getSupervisor().getFirstName(),
+                            studentGroup.getPfeSubject().getSupervisor().getLastName(),
+                            studentGroup),
+                    EmailService.YOUR_GROUP_HAS_BEEN_ACCEPTED
+            );
+            student.setAppUserRole(AppUserRole.STUDENT_ACCEPTED_IN_GROUP);
+            appUserRepository.save(student);
+        });
+
         studentGroup.setStudentGroupState(StudentGroupState.ACCEPTED);
         studentGroupRepository.save(studentGroup);
 
@@ -242,7 +266,75 @@ public class StudentGroupService {
         }
 
         StudentGroup studentGroup = studentGroupOptional.get();
+
+        studentGroup.getStudents().forEach(student -> {
+            emailService.sendEmail(student.getEmail(), EmailService.buildGroupHasBeenRejectedEmail(
+                            student.getFirstName(),
+                            student.getLastName(),
+                            studentGroup.getPfeSubject().getSubject(),
+                            studentGroup.getPfeSubject().getSupervisor().getFirstName(),
+                            studentGroup.getPfeSubject().getSupervisor().getLastName(),
+                            studentGroup),
+                    EmailService.YOUR_GROUP_HAS_BEEN_REJECTED
+            );
+        });
+
         studentGroup.setStudentGroupState(StudentGroupState.REJECTED);
+        studentGroupRepository.save(studentGroup);
+        return studentGroup;
+    }
+
+    public StudentGroup addDriveUrl(Long studentGroupId, StudentGroupDriveUrlRequest request) {
+        Optional<StudentGroup> studentGroupOptional = studentGroupRepository.findById(studentGroupId);
+        if (studentGroupOptional.isEmpty()) {
+            throw new StudentGroupException(String.format("student group id %d not found", studentGroupId));
+        }
+
+        StudentGroup studentGroup = studentGroupOptional.get();
+        if (!studentGroup.getStudentGroupState().equals(StudentGroupState.ACCEPTED)) {
+            throw new StudentGroupException(String.format("student group %d is not accepted yet", studentGroupId));
+        }
+
+        studentGroup.getStudents().forEach(student -> {
+            emailService.sendEmail(student.getEmail(), EmailService.buildDriveUrlHasBeenAddedEmail(studentGroup,
+                            studentGroup.getPfeSubject().getSubject(),
+                            studentGroup.getPfeSubject().getSupervisor().getFirstName(),
+                            studentGroup.getPfeSubject().getSupervisor().getLastName(),
+                            request.getDriveUrl()
+                    ),
+                    EmailService.DRIVE_URL_HAS_BEEN_ADDED
+            );
+        });
+
+        studentGroup.setDriveUrl(request.getDriveUrl());
+        studentGroupRepository.save(studentGroup);
+        return studentGroup;
+    }
+
+    public StudentGroup publishDriveUrl(Long studentGroupId) {
+        Optional<StudentGroup> studentGroupOptional = studentGroupRepository.findById(studentGroupId);
+        if (studentGroupOptional.isEmpty()) {
+            throw new StudentGroupException(String.format("student group id %d not found", studentGroupId));
+        }
+
+        StudentGroup studentGroup = studentGroupOptional.get();
+        if (!studentGroup.getStudentGroupState().equals(StudentGroupState.ACCEPTED)) {
+            throw new StudentGroupException(String.format("student group %d is not accepted yet", studentGroupId));
+        }
+
+        studentGroup.getStudents().forEach(student -> {
+            emailService.sendEmail(student.getEmail(), EmailService.buildDriveUrlHasBeenPublishedEmail(student.getFirstName(),
+                            student.getLastName(),
+                            studentGroup.getPfeSubject().getSubject(),
+                            studentGroup.getPfeSubject().getSupervisor().getFirstName(),
+                            studentGroup.getPfeSubject().getSupervisor().getLastName(),
+                            studentGroup.getDriveUrl()
+                    ),
+                    EmailService.DRIVE_URL_HAS_BEEN_PUBLISHED
+            );
+        });
+
+        studentGroup.setDriveUrlPublished(true);
         studentGroupRepository.save(studentGroup);
         return studentGroup;
     }

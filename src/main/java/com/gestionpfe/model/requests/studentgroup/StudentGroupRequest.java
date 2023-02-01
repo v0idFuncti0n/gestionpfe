@@ -1,4 +1,4 @@
-package com.gestionpfe.model.requests;
+package com.gestionpfe.model.requests.studentgroup;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

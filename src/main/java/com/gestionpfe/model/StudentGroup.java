@@ -11,7 +11,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
-@ToString
 public class StudentGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,6 +22,7 @@ public class StudentGroup {
             joinColumns = { @JoinColumn(name = "student_group_id") },
             inverseJoinColumns = { @JoinColumn(name = "student_id") }
     )
+    @ToString.Exclude
     private List<AppUser> students;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
@@ -34,4 +34,20 @@ public class StudentGroup {
     @OneToMany(mappedBy="studentGroup")
     private List<Rendezvous> rendezvous;
 
+    private String driveUrl;
+
+    private boolean isDriveUrlPublished;
+
+    @Override
+    public String toString() {
+        StringBuilder studentGroupNames = new StringBuilder();
+        getStudents().forEach(student -> {
+            studentGroupNames.append(student.getFirstName())
+                    .append(" ")
+                    .append(student.getLastName())
+                    .append(",");
+        });
+        studentGroupNames.deleteCharAt(studentGroupNames.length() - 1);
+        return studentGroupNames.toString();
+    }
 }
