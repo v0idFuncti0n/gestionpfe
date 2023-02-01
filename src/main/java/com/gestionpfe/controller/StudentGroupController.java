@@ -4,7 +4,7 @@ import com.gestionpfe.model.StudentGroup;
 import com.gestionpfe.model.requests.studentgroup.StudentGroupDriveUrlRequest;
 import com.gestionpfe.model.requests.studentgroup.StudentGroupRequest;
 import com.gestionpfe.model.responses.StudentGroupResponse;
-import com.gestionpfe.service.StudentGroupService;
+import com.gestionpfe.services.StudentGroupService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -3,7 +3,7 @@ package com.gestionpfe.security.config;
 import com.gestionpfe.security.PasswordEncoder;
 import com.gestionpfe.security.filters.CustomAuthenticationFilter;
 import com.gestionpfe.security.filters.CustomAuthorizationFilter;
-import com.gestionpfe.service.AppUserService;
+import com.gestionpfe.services.AppUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

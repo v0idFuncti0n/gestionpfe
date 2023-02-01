@@ -40,6 +40,5 @@ public class StudentRegistrationRequest {
 
     @NotNull(message = "branch should not be null")
     @NotBlank(message = "branch is mandatory")
-    @Size(min = 2, max = 15, message = "branch should be at least 2 characters long and should not exceed 15")
-    private final String branch;
+    private final Long branchId;
 }

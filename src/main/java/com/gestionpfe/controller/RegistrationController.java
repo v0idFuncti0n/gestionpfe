@@ -5,7 +5,7 @@ import com.gestionpfe.model.requests.StudentRegistrationRequest;
 import com.gestionpfe.model.requests.SupervisorRegistrationRequest;
 import com.gestionpfe.model.responses.StudentResponse;
 import com.gestionpfe.model.responses.SupervisorResponse;
-import com.gestionpfe.service.RegistrationService;
+import com.gestionpfe.services.RegistrationService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

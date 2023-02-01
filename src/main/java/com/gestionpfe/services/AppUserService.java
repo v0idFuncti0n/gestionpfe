@@ -1,4 +1,4 @@
-package com.gestionpfe.service;
+package com.gestionpfe.services;
 
 import com.gestionpfe.exceptions.UserException;
 import com.gestionpfe.model.AppUser;

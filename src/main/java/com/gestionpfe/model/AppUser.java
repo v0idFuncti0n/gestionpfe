@@ -33,15 +33,18 @@ public class AppUser implements UserDetails {
     private String password;
 
     // Supervisor fields
-    private String department;
 
     @OneToMany(mappedBy="supervisor")
     @ToString.Exclude
     private List<PFESubject> pfeSubjects;
 
+    @ManyToOne
+    private Department department;
+
     //Student fields
     private String codeApogee;
-    private String branch;
+    @ManyToOne
+    private Branch branch;
 
     @ManyToMany(mappedBy = "students", cascade = {CascadeType.ALL})
     @ToString.Exclude
@@ -52,7 +55,7 @@ public class AppUser implements UserDetails {
     private Boolean locked;
     private Boolean enabled;
 
-    public AppUser(String firstName, String lastName, String email, String password, String department, AppUserRole appUserRole) {
+    public AppUser(String firstName, String lastName, String email, String password, Department department, AppUserRole appUserRole) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -63,7 +66,7 @@ public class AppUser implements UserDetails {
         this.enabled = false;
     }
 
-    public AppUser(String firstName, String lastName, String email, String password, String department, AppUserRole appUserRole, boolean enabled) {
+    public AppUser(String firstName, String lastName, String email, String password, Department department, AppUserRole appUserRole, boolean enabled) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -74,7 +77,7 @@ public class AppUser implements UserDetails {
         this.enabled = enabled;
     }
 
-    public AppUser(String codeApogee, String firstName, String lastName, String email, String password, String branch, AppUserRole appUserRole) {
+    public AppUser(String codeApogee, String firstName, String lastName, String email, String password, Branch branch, AppUserRole appUserRole) {
         this.codeApogee = codeApogee;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -86,7 +89,7 @@ public class AppUser implements UserDetails {
         this.enabled = false;
     }
 
-    public AppUser(String codeApogee, String firstName, String lastName, String email, String password, String branch, AppUserRole appUserRole, boolean enabled) {
+    public AppUser(String codeApogee, String firstName, String lastName, String email, String password, Branch branch, AppUserRole appUserRole, boolean enabled) {
         this.codeApogee = codeApogee;
         this.firstName = firstName;
         this.lastName = lastName;

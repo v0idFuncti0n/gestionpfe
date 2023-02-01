@@ -5,7 +5,7 @@ import com.gestionpfe.model.requests.rendezvous.RendezvousStudentDeclineRequest;
 import com.gestionpfe.model.requests.rendezvous.RendezvousStudentRequest;
 import com.gestionpfe.model.requests.rendezvous.RendezvousSupervisorRequest;
 import com.gestionpfe.model.responses.RendezvousResponse;
-import com.gestionpfe.service.RendezvousService;
+import com.gestionpfe.services.RendezvousService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

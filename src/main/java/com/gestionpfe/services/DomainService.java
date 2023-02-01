@@ -1,4 +1,4 @@
-package com.gestionpfe.service;
+package com.gestionpfe.services;
 
 import com.gestionpfe.exceptions.DomainException;
 import com.gestionpfe.model.Domain;

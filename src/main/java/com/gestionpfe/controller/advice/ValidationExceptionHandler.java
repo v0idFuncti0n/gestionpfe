@@ -65,13 +65,28 @@ public class ValidationExceptionHandler {
     }
 
     @ExceptionHandler(StudentGroupException.class)
-    public ResponseEntity<ErrorResponse> pfeStageErrorHandler(StudentGroupException studentGroupException) {
+    public ResponseEntity<ErrorResponse> studentGroupErrorHandler(StudentGroupException studentGroupException) {
         return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST, studentGroupException.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RendezvousException.class)
-    public ResponseEntity<ErrorResponse> pfeStageErrorHandler(RendezvousException rendezvousException) {
+    public ResponseEntity<ErrorResponse> rendezvousErrorHandler(RendezvousException rendezvousException) {
         return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST, rendezvousException.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BranchException.class)
+    public ResponseEntity<ErrorResponse> branchErrorHandler(BranchException branchException) {
+        return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST, branchException.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DepartmentException.class)
+    public ResponseEntity<ErrorResponse> departmentErrorHandler(DepartmentException departmentException) {
+        return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST, departmentException.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UniversityException.class)
+    public ResponseEntity<ErrorResponse> universityErrorHandler(UniversityException universityException) {
+        return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST, universityException.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

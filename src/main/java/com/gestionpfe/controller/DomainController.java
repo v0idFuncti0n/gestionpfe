@@ -3,7 +3,7 @@ package com.gestionpfe.controller;
 import com.gestionpfe.model.Domain;
 import com.gestionpfe.model.requests.DomainRequest;
 import com.gestionpfe.model.responses.DomainResponse;
-import com.gestionpfe.service.DomainService;
+import com.gestionpfe.services.DomainService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

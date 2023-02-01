@@ -38,6 +38,11 @@ public class EmailService implements EmailSender {
     @Override
     @Async
     public void sendEmail(String to, String email, String subject) {
+        boolean isEnabled = false;
+        if (!isEnabled) {
+            return;
+        }
+
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");

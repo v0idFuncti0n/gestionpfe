@@ -1,4 +1,4 @@
-package com.gestionpfe.service;
+package com.gestionpfe.services;
 
 import com.gestionpfe.email.EmailService;
 import com.gestionpfe.enums.RendezvousState;

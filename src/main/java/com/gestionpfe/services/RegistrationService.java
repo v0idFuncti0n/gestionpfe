@@ -1,4 +1,4 @@
-package com.gestionpfe.service;
+package com.gestionpfe.services;
 
 import com.gestionpfe.email.EmailSender;
 import com.gestionpfe.email.EmailService;
@@ -6,6 +6,8 @@ import com.gestionpfe.exceptions.TokenException;
 import com.gestionpfe.exceptions.UserException;
 import com.gestionpfe.model.AppUser;
 import com.gestionpfe.enums.AppUserRole;
+import com.gestionpfe.model.Branch;
+import com.gestionpfe.model.Department;
 import com.gestionpfe.model.requests.StudentRegistrationRequest;
 import com.gestionpfe.model.requests.SupervisorRegistrationRequest;
 import com.gestionpfe.security.validators.StudentEmailValidator;
@@ -22,14 +24,18 @@ import java.util.Optional;
 public class RegistrationService {
 
     private final AppUserService appUserService;
+    private final DepartmentService departmentService;
+    private final BranchService branchService;
     private final StudentEmailValidator studentEmailValidator;
     private final SupervisorEmailValidator supervisorEmailValidator;
     private final ConfirmationTokenService confirmTokenService;
     private final EmailSender emailSender;
 
 
-    public RegistrationService(AppUserService appUserService, StudentEmailValidator studentEmailValidator, SupervisorEmailValidator supervisorEmailValidator, ConfirmationTokenService confirmTokenService, EmailSender emailSender) {
+    public RegistrationService(AppUserService appUserService, DepartmentService departmentService, BranchService branchService, StudentEmailValidator studentEmailValidator, SupervisorEmailValidator supervisorEmailValidator, ConfirmationTokenService confirmTokenService, EmailSender emailSender) {
         this.appUserService = appUserService;
+        this.departmentService = departmentService;
+        this.branchService = branchService;
         this.studentEmailValidator = studentEmailValidator;
         this.supervisorEmailValidator = supervisorEmailValidator;
         this.confirmTokenService = confirmTokenService;
@@ -39,11 +45,12 @@ public class RegistrationService {
     public AppUser registerSupervisor(SupervisorRegistrationRequest request) {
         boolean isValidEmail = supervisorEmailValidator.test(request.getEmail());
         if (isValidEmail) {
+            Department department = departmentService.findById(request.getDepartmentId());
             AppUser supervisor = new AppUser(request.getFirstName(),
                     request.getLastName(),
                     request.getEmail(),
                     request.getPassword(),
-                    request.getDepartment(),
+                    department,
                     AppUserRole.SUPERVISOR);
             String tokenForNewUser = appUserService.signUpUser(supervisor);
 
@@ -61,12 +68,13 @@ public class RegistrationService {
     public AppUser registerStudent(StudentRegistrationRequest request) throws IllegalStateException {
         boolean isValidEmail = studentEmailValidator.test(request.getEmail());
         if (isValidEmail) {
+            Branch branch = branchService.findById(request.getBranchId());
             AppUser student = new AppUser(request.getCodeApogee(),
                     request.getFirstName(),
                     request.getLastName(),
                     request.getEmail(),
                     request.getPassword(),
-                    request.getBranch(),
+                    branch,
                     AppUserRole.STUDENT);
             String tokenForNewUser = appUserService.signUpUser(student);
 

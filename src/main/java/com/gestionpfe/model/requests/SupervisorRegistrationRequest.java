@@ -35,7 +35,6 @@ public class SupervisorRegistrationRequest {
 
     @NotNull(message = "department should not be null")
     @NotBlank(message = "department is mandatory")
-    @Size(min = 2, max = 35, message = "department should be at least 2 characters long and should not exceed 35")
-    private final String department;
+    private final Long departmentId;
 
 }
