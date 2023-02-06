@@ -18,12 +18,12 @@ public class University {
 
     private String name;
 
-    @OneToMany(mappedBy="university")
+    @OneToMany(mappedBy= "university")
     @ToString.Exclude
-    private List<Department> departments;
+    private List<Establishment> establishments;
 
-    public University(String name, List<Department> departments) {
+    public University(String name, List<Establishment> establishments) {
         this.name = name;
-        this.departments = departments;
+        this.establishments = establishments;
     }
 }

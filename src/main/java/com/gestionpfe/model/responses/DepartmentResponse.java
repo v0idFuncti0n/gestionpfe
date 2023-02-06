@@ -5,8 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.gestionpfe.model.AppUser;
 import com.gestionpfe.model.Branch;
-import com.gestionpfe.model.Department;
-import com.gestionpfe.model.University;
+import com.gestionpfe.model.Establishment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,5 +30,5 @@ public class DepartmentResponse {
 
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
     @JsonIdentityReference(alwaysAsId=true)
-    private University university;
+    private Establishment establishment;
 }

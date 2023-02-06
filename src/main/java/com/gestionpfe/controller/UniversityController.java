@@ -1,5 +1,6 @@
 package com.gestionpfe.controller;
 
+import com.gestionpfe.model.responses.EstablishmentResponse;
 import com.gestionpfe.model.responses.UniversityResponse;
 import com.gestionpfe.services.UniversityService;
 import org.springframework.beans.BeanUtils;

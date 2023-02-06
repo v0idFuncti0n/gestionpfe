@@ -2,7 +2,7 @@ package com.gestionpfe.startup;
 
 import com.gestionpfe.exceptions.BranchException;
 import com.gestionpfe.exceptions.DepartmentException;
-import com.gestionpfe.exceptions.UniversityException;
+import com.gestionpfe.exceptions.EstablishmentException;
 import com.gestionpfe.model.*;
 import com.gestionpfe.enums.AppUserRole;
 import com.gestionpfe.repository.*;
@@ -23,23 +23,27 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
 
     private final DomainRepository domainRepository;
     private final AppUserRepository appUserRepository;
-    private final UniversityRepository universityRepository;
+    private final EstablishmentRepository establishmentRepository;
     private final DepartmentRepository departmentRepository;
     private final BranchRepository branchRepository;
+    private final UniversityRepository universityRepository;
 
     @Autowired
-    public CommandLineAppStartupRunner(PasswordEncoder passwordEncoder, DomainRepository domainRepository, AppUserRepository appUserRepository, UniversityRepository universityRepository, DepartmentRepository departmentRepository, BranchRepository branchRepository) {
+    public CommandLineAppStartupRunner(PasswordEncoder passwordEncoder, DomainRepository domainRepository, AppUserRepository appUserRepository, EstablishmentRepository establishmentRepository, DepartmentRepository departmentRepository, BranchRepository branchRepository, UniversityRepository universityRepository) {
         this.passwordEncoder = passwordEncoder;
         this.domainRepository = domainRepository;
         this.appUserRepository = appUserRepository;
-        this.universityRepository = universityRepository;
+        this.establishmentRepository = establishmentRepository;
         this.departmentRepository = departmentRepository;
         this.branchRepository = branchRepository;
+        this.universityRepository = universityRepository;
     }
 
     @Override
     public void run(String... args) {
         createUniversities();
+
+        createEstablishments();
 
         createDepartments();
 
@@ -56,24 +60,61 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
         University ams = new University("Abdelmalek Essaadi", new ArrayList<>());
         universityRepository.save(ams);
     }
-    private void createDepartments() {
+
+    public void createEstablishments() {
         University ams = universityRepository.findUniversityByName("Abdelmalek Essaadi").orElseThrow(() -> {
-            throw new UniversityException("university not found");
+            throw new EstablishmentException("university not found");
         });
-        Department departmentInformatique = new Department("Informatique", ams);
+
+        Establishment fst = new Establishment("Faculte des sciences", ams);
+        establishmentRepository.save(fst);
+    }
+    private void createDepartments() {
+        Establishment fst = establishmentRepository.findEstablishmentByName("Faculte des sciences").orElseThrow(() -> {
+            throw new EstablishmentException("establishment not found");
+        });
+
+        Department departmentInformatique = new Department("Informatique", fst);
+        Department departmentMath = new Department("Math", fst);
+        Department departmentPhys = new Department("Physique", fst);
+
         departmentRepository.save(departmentInformatique);
+        departmentRepository.save(departmentPhys);
+        departmentRepository.save(departmentMath);
     }
 
     private void createBranches() {
         Department departmentInformatique = departmentRepository.findDepartmentByName("Informatique").orElseThrow(() -> {
             throw new DepartmentException("department not found");
         });
+
+        Department departmentMath = departmentRepository.findDepartmentByName("Math").orElseThrow(() -> {
+            throw new DepartmentException("department not found");
+        });
+
+        Department departmentPhys = departmentRepository.findDepartmentByName("Physique").orElseThrow(() -> {
+            throw new DepartmentException("department not found");
+        });
+
         Branch smi = new Branch("SMI", departmentInformatique, new ArrayList<>());
-        List<Branch> branches = new ArrayList<>(departmentInformatique.getBranches());
+        List<Branch> branches = departmentInformatique.getBranches();
         branches.add(smi);
         departmentInformatique.setBranches(branches);
         branchRepository.save(smi);
+
+        Branch sma = new Branch("SMA", departmentMath, new ArrayList<>());
+        branches = departmentMath.getBranches();
+        branches.add(sma);
+        branchRepository.save(sma);
+
+        Branch smp = new Branch("SMP", departmentPhys, new ArrayList<>());
+        branches = departmentPhys.getBranches();
+        branches.add(smp);
+        branchRepository.save(smp);
+
         departmentRepository.save(departmentInformatique);
+        departmentRepository.save(departmentPhys);
+        departmentRepository.save(departmentMath);
     }
 
     private void createDefaultSupervisorUsers() {

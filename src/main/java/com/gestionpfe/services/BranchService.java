@@ -8,6 +8,7 @@ import com.gestionpfe.repository.DepartmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +31,12 @@ public class BranchService {
         }
 
         return branch.get();
+    }
+
+    public List<Branch> findAll() {
+        List<Branch> branches = new ArrayList<>();
+        branchRepository.findAll().forEach(branches::add);
+        return branches;
     }
 
     public List<Branch> findByDepartment(Long departmentId) {

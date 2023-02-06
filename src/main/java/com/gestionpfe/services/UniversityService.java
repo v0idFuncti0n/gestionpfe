@@ -1,9 +1,8 @@
 package com.gestionpfe.services;
 
 import com.gestionpfe.exceptions.BranchException;
-import com.gestionpfe.model.Department;
+import com.gestionpfe.model.Establishment;
 import com.gestionpfe.model.University;
-import com.gestionpfe.repository.DepartmentRepository;
 import com.gestionpfe.repository.UniversityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

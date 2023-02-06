@@ -19,8 +19,8 @@ public class Department {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name="university_id", nullable=false)
-    private University university;
+    @JoinColumn(name="establishment_id", nullable=false)
+    private Establishment establishment;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy="department")
     @ToString.Exclude
@@ -30,8 +30,8 @@ public class Department {
     @ToString.Exclude
     private List<AppUser> supervisors;
 
-    public Department(String name, University university) {
+    public Department(String name, Establishment establishment) {
         this.name = name;
-        this.university = university;
+        this.establishment = establishment;
     }
 }

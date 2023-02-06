@@ -1,11 +1,11 @@
 package com.gestionpfe.services;
 
 import com.gestionpfe.exceptions.BranchException;
-import com.gestionpfe.exceptions.UniversityException;
+import com.gestionpfe.exceptions.EstablishmentException;
 import com.gestionpfe.model.Department;
-import com.gestionpfe.model.University;
+import com.gestionpfe.model.Establishment;
 import com.gestionpfe.repository.DepartmentRepository;
-import com.gestionpfe.repository.UniversityRepository;
+import com.gestionpfe.repository.EstablishmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +16,12 @@ import java.util.Optional;
 public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
-    private final UniversityRepository universityRepository;
+    private final EstablishmentRepository establishmentRepository;
 
     @Autowired
-    public DepartmentService(DepartmentRepository departmentRepository, UniversityRepository universityRepository) {
+    public DepartmentService(DepartmentRepository departmentRepository, EstablishmentRepository establishmentRepository) {
         this.departmentRepository = departmentRepository;
-        this.universityRepository = universityRepository;
+        this.establishmentRepository = establishmentRepository;
     }
 
     public Department findById(Long departmentId) {
@@ -33,15 +33,13 @@ public class DepartmentService {
         return branch.get();
     }
 
-    public List<Department> findByUniversity(Long universityId) {
-        Optional<University> universityOptional = universityRepository.findById(universityId);
-        if(universityOptional.isEmpty()) {
-            throw new UniversityException(String.format("university id %d not found", universityId));
+    public List<Department> findByEstablishment(Long establishmentId) {
+        Optional<Establishment> establishmentOptional = establishmentRepository.findById(establishmentId);
+        if(establishmentOptional.isEmpty()) {
+            throw new EstablishmentException(String.format("establishment id %d not found", establishmentId));
         }
-        University university = universityOptional.get();
+        Establishment establishment = establishmentOptional.get();
 
-        List<Department> departments = departmentRepository.findDepartmentByUniversity(university);
-
-        return departments;
+        return departmentRepository.findDepartmentByEstablishment(establishment);
     }
 }

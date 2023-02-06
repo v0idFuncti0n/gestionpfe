@@ -1,5 +1,6 @@
 package com.gestionpfe.controller;
 
+import com.gestionpfe.model.Branch;
 import com.gestionpfe.model.responses.BranchResponse;
 import com.gestionpfe.services.BranchService;
 import org.springframework.beans.BeanUtils;
@@ -26,6 +27,19 @@ public class BranchController {
     public ResponseEntity<List<BranchResponse>> findBranchByDepartment(@PathVariable("department-id") Long departmentId) {
         List<BranchResponse> branchResponses = new ArrayList<>();
         branchService.findByDepartment(departmentId).forEach(branch -> {
+            BranchResponse branchResponse = new BranchResponse();
+            BeanUtils.copyProperties(branch, branchResponse);
+            branchResponses.add(branchResponse);
+        });
+
+        return new ResponseEntity<>(branchResponses, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<BranchResponse>> getAllBranches() {
+        List<BranchResponse> branchResponses = new ArrayList<>();
+        List<Branch> branches = branchService.findAll();
+        branches.forEach(branch -> {
             BranchResponse branchResponse = new BranchResponse();
             BeanUtils.copyProperties(branch, branchResponse);
             branchResponses.add(branchResponse);

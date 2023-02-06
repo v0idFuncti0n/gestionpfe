@@ -1,6 +1,6 @@
 package com.gestionpfe.repository;
 
-import com.gestionpfe.model.Department;
+import com.gestionpfe.model.Establishment;
 import com.gestionpfe.model.University;
 import org.springframework.data.repository.CrudRepository;
 

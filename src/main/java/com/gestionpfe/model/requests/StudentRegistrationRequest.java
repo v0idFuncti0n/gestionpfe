@@ -39,6 +39,5 @@ public class StudentRegistrationRequest {
     private final String codeApogee;
 
     @NotNull(message = "branch should not be null")
-    @NotBlank(message = "branch is mandatory")
     private final Long branchId;
 }

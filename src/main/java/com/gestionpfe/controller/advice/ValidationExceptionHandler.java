@@ -84,6 +84,11 @@ public class ValidationExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST, departmentException.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(EstablishmentException.class)
+    public ResponseEntity<ErrorResponse> establishmentErrorHandler(EstablishmentException establishmentException) {
+        return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST, establishmentException.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(UniversityException.class)
     public ResponseEntity<ErrorResponse> universityErrorHandler(UniversityException universityException) {
         return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST, universityException.getMessage()), HttpStatus.BAD_REQUEST);

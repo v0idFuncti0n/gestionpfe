@@ -26,10 +26,10 @@ public class DepartmentController {
         this.departmentService = departmentService;
     }
 
-    @GetMapping(path = "/university/{university-id}")
-    public ResponseEntity<List<DepartmentResponse>> findDepartmentsByUniversity(@PathVariable("university-id") Long universityId) {
+    @GetMapping(path = "/establishment/{establishment-id}")
+    public ResponseEntity<List<DepartmentResponse>> findDepartmentsByEstablishment(@PathVariable("establishment-id") Long establishmentId) {
         List<DepartmentResponse> departmentsResponses = new ArrayList<>();
-        departmentService.findByUniversity(universityId).forEach(department -> {
+        departmentService.findByEstablishment(establishmentId).forEach(department -> {
             DepartmentResponse departmentResponse = new DepartmentResponse();
             BeanUtils.copyProperties(department, departmentResponse);
             departmentsResponses.add(departmentResponse);
