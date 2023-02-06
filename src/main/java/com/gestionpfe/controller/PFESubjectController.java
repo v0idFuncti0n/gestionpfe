@@ -57,4 +57,16 @@ public class PFESubjectController {
         return new ResponseEntity<>(pfeSubjectResponse, HttpStatus.CREATED);
     }
 
+    @GetMapping(path = "/search")
+    public ResponseEntity<List<PFESubjectResponse>> findByKeyword(@RequestParam String keyword) {
+        List<PFESubjectResponse> pfeSubjectResponses = new ArrayList<>();
+        pfeSubjectService.findByKeyword(keyword).forEach(pfeSubject -> {
+            PFESubjectResponse pfeSubjectResponse = new PFESubjectResponse();
+            BeanUtils.copyProperties(pfeSubject, pfeSubjectResponse);
+            pfeSubjectResponses.add(pfeSubjectResponse);
+        });
+
+        return new ResponseEntity<>(pfeSubjectResponses, HttpStatus.OK);
+    }
+
 }

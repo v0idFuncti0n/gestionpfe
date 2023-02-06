@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -57,5 +58,9 @@ public class PFESubjectService {
             throw new UserException(String.format("supervisor id %d not found ", supervisorId));
         }
         return pfeSubjectRepository.findBySupervisor(supervisor);
+    }
+
+    public List<PFESubject> findByKeyword(String keyword) {
+        return pfeSubjectRepository.findPFESubjectBySubjectContainsOrSupervisor_FirstNameContainsOrSupervisor_LastNameContains(keyword, keyword, keyword);
     }
 }

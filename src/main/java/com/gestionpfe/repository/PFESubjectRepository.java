@@ -11,4 +11,6 @@ public interface PFESubjectRepository extends CrudRepository<PFESubject, Long> {
     PFESubject findBySubject(String subject);
 
     List<PFESubject> findBySupervisor(AppUser supervisor);
+
+    List<PFESubject> findPFESubjectBySubjectContainsOrSupervisor_FirstNameContainsOrSupervisor_LastNameContains(String keyword1, String keyword2, String keyword3);
 }
