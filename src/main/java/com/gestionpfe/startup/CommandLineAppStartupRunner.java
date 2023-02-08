@@ -112,6 +112,11 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
         branches.add(smp);
         branchRepository.save(smp);
 
+        Branch smc = new Branch("SMC", departmentPhys, new ArrayList<>());
+        branches = departmentPhys.getBranches();
+        branches.add(smc);
+        branchRepository.save(smc);
+
         departmentRepository.save(departmentInformatique);
         departmentRepository.save(departmentPhys);
         departmentRepository.save(departmentMath);
