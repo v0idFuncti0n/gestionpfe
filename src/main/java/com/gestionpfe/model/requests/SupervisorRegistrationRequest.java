@@ -34,7 +34,6 @@ public class SupervisorRegistrationRequest {
     private final String password;
 
     @NotNull(message = "department should not be null")
-    @NotBlank(message = "department is mandatory")
     private final Long departmentId;
 
 }
