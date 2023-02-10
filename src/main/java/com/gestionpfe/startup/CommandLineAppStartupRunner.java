@@ -59,6 +59,9 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
     public void createUniversities() {
         University ams = new University("Abdelmalek Essaadi", new ArrayList<>());
         universityRepository.save(ams);
+
+        University mvu = new University("Mohammed V University", new ArrayList<>());
+        universityRepository.save(mvu);
     }
 
     public void createEstablishments() {
@@ -66,11 +69,22 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
             throw new EstablishmentException("university not found");
         });
 
+        University mvu = universityRepository.findUniversityByName("Mohammed V University").orElseThrow(() -> {
+            throw new EstablishmentException("university not found");
+        });
+
         Establishment fst = new Establishment("Faculte des sciences", ams);
         establishmentRepository.save(fst);
+
+        Establishment est = new Establishment("EST", mvu);
+        establishmentRepository.save(est);
     }
     private void createDepartments() {
         Establishment fst = establishmentRepository.findEstablishmentByName("Faculte des sciences").orElseThrow(() -> {
+            throw new EstablishmentException("establishment not found");
+        });
+
+        Establishment est = establishmentRepository.findEstablishmentByName("EST").orElseThrow(() -> {
             throw new EstablishmentException("establishment not found");
         });
 
@@ -81,6 +95,9 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
         departmentRepository.save(departmentInformatique);
         departmentRepository.save(departmentPhys);
         departmentRepository.save(departmentMath);
+
+        Department departmentInformatiqueEST = new Department("Informatique EST", est);
+        departmentRepository.save(departmentInformatiqueEST);
     }
 
     private void createBranches() {
@@ -93,6 +110,10 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
         });
 
         Department departmentPhys = departmentRepository.findDepartmentByName("Physique").orElseThrow(() -> {
+            throw new DepartmentException("department not found");
+        });
+
+        Department departmentInformatiqueEST = departmentRepository.findDepartmentByName("Informatique EST").orElseThrow(() -> {
             throw new DepartmentException("department not found");
         });
 
@@ -117,15 +138,25 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
         branches.add(smc);
         branchRepository.save(smc);
 
+        Branch gl = new Branch("GL", departmentPhys, new ArrayList<>());
+        branches = departmentInformatiqueEST.getBranches();
+        branches.add(gl);
+        branchRepository.save(gl);
+
         departmentRepository.save(departmentInformatique);
         departmentRepository.save(departmentPhys);
         departmentRepository.save(departmentMath);
+        departmentRepository.save(departmentInformatiqueEST);
     }
 
     private void createDefaultSupervisorUsers() {
         Department departmentInformatique = departmentRepository.findDepartmentByName("Informatique").orElseThrow(() -> {
             throw new DepartmentException("department not found");
         });
+        Department departmentInformatiqueEST = departmentRepository.findDepartmentByName("Informatique EST").orElseThrow(() -> {
+            throw new DepartmentException("department not found");
+        });
+
         AppUser supervisor = new AppUser("Youssef",
                 "Bajm3a",
                 "lakchouchanas@gmail.com",
@@ -140,6 +171,15 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
                 "ahmed.bou3aza@uae.ac.ma",
                 passwordEncoder.encode("password"),
                 departmentInformatique,
+                AppUserRole.SUPERVISOR,
+                true);
+        appUserRepository.save(supervisor);
+
+        supervisor = new AppUser("Ahmed",
+                "Boo",
+                "ahmed.boo@uae.ac.ma",
+                passwordEncoder.encode("password"),
+                departmentInformatiqueEST,
                 AppUserRole.SUPERVISOR,
                 true);
         appUserRepository.save(supervisor);

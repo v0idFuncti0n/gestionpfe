@@ -3,7 +3,7 @@ package com.gestionpfe.services;
 import com.gestionpfe.email.EmailService;
 import com.gestionpfe.enums.AppUserRole;
 import com.gestionpfe.enums.StudentGroupState;
-import com.gestionpfe.exceptions.PFEStageException;
+import com.gestionpfe.exceptions.PFESubjectException;
 import com.gestionpfe.exceptions.StudentGroupException;
 import com.gestionpfe.exceptions.UserException;
 import com.gestionpfe.model.AppUser;
@@ -53,7 +53,7 @@ public class StudentGroupService {
 
         Optional<PFESubject> pfeSubjectOptional = pfeSubjectRepository.findById(pfeSubjectId);
         if (pfeSubjectOptional.isEmpty()) {
-            throw new PFEStageException(String.format("pfe subject id %d not found", pfeSubjectId));
+            throw new PFESubjectException(String.format("pfe subject id %d not found", pfeSubjectId));
         }
 
         student.getStudentGroup().forEach(studentGroup -> {
@@ -110,7 +110,7 @@ public class StudentGroupService {
 
         Optional<PFESubject> pfeSubjectOptional = pfeSubjectRepository.findById(pfeSubjectId);
         if (pfeSubjectOptional.isEmpty()) {
-            throw new PFEStageException(String.format("pfe subject id %d not found", pfeSubjectId));
+            throw new PFESubjectException(String.format("pfe subject id %d not found", pfeSubjectId));
         }
 
         Optional<StudentGroup> studentGroupOptional = studentGroupRepository.findById(studentGroupId);
@@ -193,7 +193,7 @@ public class StudentGroupService {
 
         Optional<PFESubject> pfeSubjectOptional = pfeSubjectRepository.findById(pfeSubjectId);
         if (pfeSubjectOptional.isEmpty()) {
-            throw new PFEStageException(String.format("pfe subject id %d not found!", pfeSubjectId));
+            throw new PFESubjectException(String.format("pfe subject id %d not found!", pfeSubjectId));
         }
 
         PFESubject pfeSubject = pfeSubjectOptional.get();
@@ -211,7 +211,7 @@ public class StudentGroupService {
     public List<StudentGroup> findByPFESubject(Long pfeSubjectId) {
         Optional<PFESubject> pfeSubjectOptional = pfeSubjectRepository.findById(pfeSubjectId);
         if (pfeSubjectOptional.isEmpty()) {
-            throw new PFEStageException(String.format("pfe subject id %d not found", pfeSubjectId));
+            throw new PFESubjectException(String.format("pfe subject id %d not found", pfeSubjectId));
         }
 
         PFESubject pfeSubject = pfeSubjectOptional.get();

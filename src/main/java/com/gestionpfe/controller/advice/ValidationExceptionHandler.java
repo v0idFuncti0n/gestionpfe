@@ -59,9 +59,9 @@ public class ValidationExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST, emailException.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(PFEStageException.class)
-    public ResponseEntity<ErrorResponse> pfeStageErrorHandler(PFEStageException pfeStageException) {
-        return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST, pfeStageException.getMessage()), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(PFESubjectException.class)
+    public ResponseEntity<ErrorResponse> pfeStageErrorHandler(PFESubjectException pfeSubjectException) {
+        return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST, pfeSubjectException.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(StudentGroupException.class)
