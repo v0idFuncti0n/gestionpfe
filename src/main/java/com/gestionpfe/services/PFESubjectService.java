@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -74,30 +76,48 @@ public class PFESubjectService {
     }
 
     public List<PFESubject> findByKeyword(String keyword) {
-        return pfeSubjectRepository.findPFESubjectBySubjectContainsOrSupervisor_FirstNameContainsOrSupervisor_LastNameContains(keyword, keyword, keyword);
+        return pfeSubjectRepository.findPFESubjectBySubjectContainsOrSupervisor_FirstNameContainsOrSupervisor_LastNameContainsOrderById(keyword, keyword, keyword);
     }
 
     public List<PFESubject> findByUniversity(Long universityId) {
-        return pfeSubjectRepository.findPFESubjectBySupervisor_Department_Establishment_University_Id(universityId);
+        return pfeSubjectRepository.findPFESubjectBySupervisor_Department_Establishment_University_IdOrderById(universityId);
     }
 
     public List<PFESubject> findByUniversityAndKeyword(Long universityId, String keyword) {
-        return pfeSubjectRepository.findPFESubjectBySupervisor_Department_Establishment_University_IdAndSubjectContainsOrSupervisor_FirstNameContainsOrSupervisor_LastNameContains(universityId, keyword, keyword, keyword);
+        List<PFESubject> pfeSubjectsByUniversity = this.findByUniversity(universityId);
+        List<PFESubject> pfeSubjectsByKeyword = this.findByKeyword(keyword);
+
+        return pfeSubjectsByKeyword.stream()
+                .distinct()
+                .filter(pfeSubjectsByUniversity::contains)
+                .collect(Collectors.toList());
     }
 
     public List<PFESubject> findByEstablishment(Long establishmentId) {
-        return pfeSubjectRepository.findPFESubjectBySupervisor_Department_Establishment_Id(establishmentId);
+        return pfeSubjectRepository.findPFESubjectBySupervisor_Department_Establishment_IdOrderById(establishmentId);
     }
 
     public List<PFESubject> findByEstablishmentAndKeyword(Long establishmentId, String keyword) {
-        return pfeSubjectRepository.findPFESubjectBySupervisor_Department_Establishment_IdAndSubjectContainsOrSupervisor_FirstNameContainsOrSupervisor_LastNameContains(establishmentId, keyword, keyword, keyword);
+        List<PFESubject> pfeSubjectsByEstablishment = this.findByEstablishment(establishmentId);
+        List<PFESubject> pfeSubjectsByKeyword = this.findByKeyword(keyword);
+
+        return pfeSubjectsByKeyword.stream()
+                .distinct()
+                .filter(pfeSubjectsByEstablishment::contains)
+                .collect(Collectors.toList());
     }
 
     public List<PFESubject> findByDepartment(Long departmentId) {
-        return pfeSubjectRepository.findPFESubjectBySupervisor_Department_Id(departmentId);
+        return pfeSubjectRepository.findPFESubjectBySupervisor_Department_IdOrderById(departmentId);
     }
 
     public List<PFESubject> findByDepartmentAndKeyword(Long departmentId, String keyword) {
-        return pfeSubjectRepository.findPFESubjectBySupervisor_Department_IdAndSubjectContainsOrSupervisor_FirstNameContainsOrSupervisor_LastNameContains(departmentId, keyword, keyword, keyword);
+        List<PFESubject> pfeSubjectsByDepartment = this.findByDepartment(departmentId);
+        List<PFESubject> pfeSubjectsByKeyword = this.findByKeyword(keyword);
+
+        return pfeSubjectsByKeyword.stream()
+                .distinct()
+                .filter(pfeSubjectsByDepartment::contains)
+                .collect(Collectors.toList());
     }
 }
