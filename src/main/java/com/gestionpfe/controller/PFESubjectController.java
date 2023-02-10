@@ -70,7 +70,7 @@ public class PFESubjectController {
     }
 
     @GetMapping(path = "/pfe-subject/{pfe-subject-id}")
-    public ResponseEntity<PFESubjectResponse> findById(@RequestParam Long pfeSubjectId) {
+    public ResponseEntity<PFESubjectResponse> findById(@PathVariable(name = "pfe-subject-id") Long pfeSubjectId) {
         PFESubjectResponse pfeSubjectResponse = new PFESubjectResponse();
         PFESubject pfeSubject = pfeSubjectService.findById(pfeSubjectId);
         BeanUtils.copyProperties(pfeSubject, pfeSubjectResponse);
