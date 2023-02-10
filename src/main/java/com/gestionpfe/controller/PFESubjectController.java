@@ -69,7 +69,7 @@ public class PFESubjectController {
         return new ResponseEntity<>(pfeSubjectResponses, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/{pfe-subject-id}")
+    @GetMapping(path = "/pfe-subject/{pfe-subject-id}")
     public ResponseEntity<PFESubjectResponse> findById(@RequestParam Long pfeSubjectId) {
         PFESubjectResponse pfeSubjectResponse = new PFESubjectResponse();
         PFESubject pfeSubject = pfeSubjectService.findById(pfeSubjectId);
