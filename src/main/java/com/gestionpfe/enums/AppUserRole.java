@@ -4,5 +4,6 @@ public enum AppUserRole {
     STUDENT,
     SUPERVISOR,
 
-    STUDENT_ACCEPTED_IN_GROUP
+    STUDENT_ACCEPTED_IN_GROUP,
+    ADMIN
 }

@@ -54,6 +54,7 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
 
         createDefaultStudentUser();
         createDefaultSupervisorUsers();
+        createDefaultAdminUsers();
     }
 
     public void createUniversities() {
@@ -230,6 +231,16 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
                 AppUserRole.STUDENT,
                 true);
         appUserRepository.save(student3);
+    }
+
+    private void createDefaultAdminUsers() {
+        AppUser admin = new AppUser("Admin",
+                "TEST",
+                "admin@admin.com",
+                passwordEncoder.encode("password"),
+                AppUserRole.ADMIN,
+                true);
+        appUserRepository.save(admin);
     }
 
 }
