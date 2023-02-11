@@ -209,6 +209,27 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
                 AppUserRole.STUDENT,
                 true);
         appUserRepository.save(student);
+
+        log.error("{}", smi);
+        AppUser student2 = new AppUser("170010061",
+                "Moad",
+                "Zabt",
+                "moad.zabt@etu.uae.ac.ma",
+                passwordEncoder.encode("password"),
+                smi,
+                AppUserRole.STUDENT,
+                true);
+        appUserRepository.save(student2);
+
+        AppUser student3 = new AppUser("170010062",
+                "Moahmmed Anass",
+                "Boukhancha",
+                "mohammed.anass.boukhancha@etu.uae.ac.ma",
+                passwordEncoder.encode("password"),
+                smi,
+                AppUserRole.STUDENT,
+                true);
+        appUserRepository.save(student3);
     }
 
 }
