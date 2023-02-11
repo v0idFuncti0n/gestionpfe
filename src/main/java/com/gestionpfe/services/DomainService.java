@@ -7,6 +7,9 @@ import com.gestionpfe.repository.DomainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class DomainService {
 
@@ -28,5 +31,11 @@ public class DomainService {
 
         domainRepository.save(domain);
         return domain;
+    }
+
+    public List<Domain> findAll() {
+        List<Domain> domains = new ArrayList<>();
+        domainRepository.findAll().forEach(domains::add);
+        return domains;
     }
 }
