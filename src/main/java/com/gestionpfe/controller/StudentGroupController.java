@@ -115,7 +115,7 @@ public class StudentGroupController {
         return new ResponseEntity<>(studentGroupResponse, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/{student-group-id}")
+    @GetMapping(path = "/group/{student-group-id}")
     public ResponseEntity<StudentGroupResponse> findById(@PathVariable(name = "student-group-id") Long studentGroupId) {
         StudentGroupResponse studentGroupResponse = new StudentGroupResponse();
         StudentGroup studentGroup = studentGroupService.findById(studentGroupId);

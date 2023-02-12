@@ -30,6 +30,8 @@ public class RendezvousResponse {
 
     private RendezvousState rendezvousState;
 
+    private String decliningMessage;
+
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
     @JsonIdentityReference(alwaysAsId=true)
     private StudentGroup studentGroup;
