@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.text.DateFormat;
 import java.time.LocalDateTime;
 
 @Getter
@@ -17,7 +18,7 @@ public class RendezvousSupervisorRequest {
 
     // TODO: validations
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime rendezvous;
 
 }
