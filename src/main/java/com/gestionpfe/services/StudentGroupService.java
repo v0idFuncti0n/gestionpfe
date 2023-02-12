@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -338,5 +337,31 @@ public class StudentGroupService {
         studentGroup.setDriveUrlPublished(true);
         studentGroupRepository.save(studentGroup);
         return studentGroup;
+    }
+
+    public StudentGroup findById(Long studentGroupId) {
+        Optional<StudentGroup> studentGroupOptional = studentGroupRepository.findById(studentGroupId);
+        if(studentGroupOptional.isEmpty()) {
+            throw new StudentGroupException(String.format("student group id %d is not found", studentGroupId));
+        }
+        return studentGroupOptional.get();
+    }
+
+    public StudentGroup findByAcceptedStudent(Long studentId) {
+        Optional<AppUser> studentOptional = appUserRepository.findById(studentId);
+        if (studentOptional.isEmpty()) {
+            throw new UserException(String.format("student id %d not found!", studentId));
+        }
+
+        AppUser student = studentOptional.get();
+        final StudentGroup[] acceptedStudentGroup = new StudentGroup[1];
+        student.getStudentGroup().forEach(studentGroup -> {
+            if (studentGroup.getStudentGroupState().equals(StudentGroupState.ACCEPTED)) {
+                acceptedStudentGroup[0] = studentGroup;
+            } else {
+                throw new StudentGroupException(String.format("student id %d not accepted in any group", studentId));
+            }
+        });
+        return acceptedStudentGroup[0];
     }
 }

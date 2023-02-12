@@ -1,9 +1,11 @@
 package com.gestionpfe.services;
 
 import com.gestionpfe.exceptions.PFESubjectException;
+import com.gestionpfe.exceptions.StudentGroupException;
 import com.gestionpfe.exceptions.UserException;
 import com.gestionpfe.model.AppUser;
 import com.gestionpfe.model.PFESubject;
+import com.gestionpfe.model.StudentGroup;
 import com.gestionpfe.model.requests.PFESubjectRequest;
 import com.gestionpfe.repository.PFESubjectRepository;
 import com.gestionpfe.repository.UniversityRepository;
@@ -14,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,13 +24,15 @@ public class PFESubjectService {
 
     private final PFESubjectRepository pfeSubjectRepository;
     private final AppUserService appUserService;
+    private final StudentGroupService studentGroupService;
 
     private final UniversityRepository universityRepository;
 
     @Autowired
-    public PFESubjectService(PFESubjectRepository pfeSubjectRepository, AppUserService appUserService, UniversityRepository universityRepository) {
+    public PFESubjectService(PFESubjectRepository pfeSubjectRepository, AppUserService appUserService, StudentGroupService studentGroupService, UniversityRepository universityRepository) {
         this.pfeSubjectRepository = pfeSubjectRepository;
         this.appUserService = appUserService;
+        this.studentGroupService = studentGroupService;
         this.universityRepository = universityRepository;
     }
 
@@ -119,5 +122,16 @@ public class PFESubjectService {
                 .distinct()
                 .filter(pfeSubjectsByDepartment::contains)
                 .collect(Collectors.toList());
+    }
+
+    public PFESubject findByStudentGroup(Long studentGroupId) {
+        Optional<StudentGroup> studentGroupOptional = this.studentGroupService.findById(studentGroupId);
+        if(studentGroupOptional.isEmpty()) {
+            throw new StudentGroupException(String.format("student group id %d not found", studentGroupId));
+        }
+
+        StudentGroup studentGroup = studentGroupOptional.get();
+
+        return studentGroup.getPfeSubject();
     }
 }

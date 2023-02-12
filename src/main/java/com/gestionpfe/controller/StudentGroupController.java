@@ -106,4 +106,21 @@ public class StudentGroupController {
         BeanUtils.copyProperties(studentGroup, studentGroupResponse);
         return new ResponseEntity<>(studentGroupResponse, HttpStatus.OK);
     }
+
+    @GetMapping(path = "/student/{student-id}")
+    public ResponseEntity<StudentGroupResponse> findByAcceptedStudentId(@PathVariable(name = "student-id") Long studentId) {
+        StudentGroupResponse studentGroupResponse = new StudentGroupResponse();
+        StudentGroup studentGroup = studentGroupService.findByAcceptedStudent(studentId);
+        BeanUtils.copyProperties(studentGroup, studentGroupResponse);
+        return new ResponseEntity<>(studentGroupResponse, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/{student-group-id}")
+    public ResponseEntity<StudentGroupResponse> findById(@PathVariable(name = "student-group-id") Long studentGroupId) {
+        StudentGroupResponse studentGroupResponse = new StudentGroupResponse();
+        StudentGroup studentGroup = studentGroupService.findById(studentGroupId);
+        BeanUtils.copyProperties(studentGroup, studentGroupResponse);
+        return new ResponseEntity<>(studentGroupResponse, HttpStatus.OK);
+    }
+
 }

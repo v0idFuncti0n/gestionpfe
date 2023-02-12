@@ -149,4 +149,12 @@ public class PFESubjectController {
         return new ResponseEntity<>(pfeSubjectResponses, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/student-group/{student-group-id}")
+    public ResponseEntity<PFESubjectResponse> findByStudentGroup(@PathVariable(name = "student-group-id") Long studentGroupId) {
+        PFESubjectResponse pfeSubjectResponse = new PFESubjectResponse();
+        PFESubject pfeSubject = pfeSubjectService.findByStudentGroup(studentGroupId);
+        BeanUtils.copyProperties(pfeSubject, pfeSubjectResponse);
+        return new ResponseEntity<>(pfeSubjectResponse, HttpStatus.OK);
+    }
+
 }
