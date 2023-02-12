@@ -125,13 +125,7 @@ public class PFESubjectService {
     }
 
     public PFESubject findByStudentGroup(Long studentGroupId) {
-        Optional<StudentGroup> studentGroupOptional = this.studentGroupService.findById(studentGroupId);
-        if(studentGroupOptional.isEmpty()) {
-            throw new StudentGroupException(String.format("student group id %d not found", studentGroupId));
-        }
-
-        StudentGroup studentGroup = studentGroupOptional.get();
-
+        StudentGroup studentGroup = this.studentGroupService.findById(studentGroupId);
         return studentGroup.getPfeSubject();
     }
 }
