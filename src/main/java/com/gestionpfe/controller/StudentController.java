@@ -21,11 +21,6 @@ public class StudentController {
         this.appUserService = appUserService;
     }
 
-    @GetMapping("/welcome")
-    public String getWelcomeMessage() {
-        return "Welcome duude!";
-    }
-
     @GetMapping(path = "/{student-id}")
     public ResponseEntity<StudentResponse> findStudentById(@PathVariable("student-id") Long studentId) {
         StudentResponse studentResponse = new StudentResponse();

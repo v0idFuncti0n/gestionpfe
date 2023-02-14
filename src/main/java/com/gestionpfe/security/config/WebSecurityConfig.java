@@ -1,11 +1,13 @@
 package com.gestionpfe.security.config;
 
+import com.gestionpfe.enums.AppUserRole;
 import com.gestionpfe.security.PasswordEncoder;
 import com.gestionpfe.security.filters.CustomAuthenticationFilter;
 import com.gestionpfe.security.filters.CustomAuthorizationFilter;
 import com.gestionpfe.services.AppUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -50,6 +52,42 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests()
                 .antMatchers("/api/login", "/api/v*/registration/**").permitAll()
+                .antMatchers("/api/v1/branch/**").authenticated()
+                .antMatchers("/api/v1/department/**").permitAll()
+                .antMatchers("/api/v1/domain/**").hasAuthority("ADMIN")
+                .antMatchers("/api/v1/establishment/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/pfe-subject/").hasAuthority("SUPERVISOR")
+                .antMatchers(HttpMethod.GET,
+                        "/api/v1/pfe-subject/",
+                        "/api/v1/pfe-subject/search",
+                        "/api/v1/pfe-subject/{supervisorId}",
+                        "/api/v1/pfe-subject/university/{university-id}",
+                        "/api/v1/pfe-subject/university/{university-id}/search",
+                        "/api/v1/pfe-subject/establishment/{establishment-id}",
+                        "/api/v1/pfe-subject/establishment/{establishment-id}/search",
+                        "/api/v1/pfe-subject/department/{department-id}",
+                        "/api/v1/pfe-subject/department/{department-id}/search",
+                        "/api/v1/pfe-subject/pfe-subject/{pfe-subject-id}",
+                        "/api/v1/pfe-subject/student-group/{student-group-id}").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/rendezvous/{student-group-id}").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/v1/rendezvous/{student-group-id}").hasAuthority("STUDENT")
+                .antMatchers(HttpMethod.POST, "/api/v1/rendezvous/{rendezvous-id}/group/{student-group-id}").hasAuthority("SUPERVISOR")
+                .antMatchers(HttpMethod.POST, "/api/v1/rendezvous/{rendezvous-id}/group/{student-group-id}/accept").hasAuthority("STUDENT")
+                .antMatchers(HttpMethod.POST, "/api/v1/rendezvous/{rendezvous-id}/group/{student-group-id}/reject").hasAuthority("STUDENT")
+                .antMatchers( "/api/v1/student/**").authenticated()
+                .antMatchers( "/api/v1/student-group/{pfe-subject-id}").permitAll()
+                .antMatchers( "/api/v1/student-group/completed-groups/{pfe-subject-id}").hasAuthority("SUPERVISOR")
+                .antMatchers( "/api/v1/student-group/pfe-subject/{pfe-subject-id}").hasAuthority("STUDENT")
+                .antMatchers( "/api/v1/student-group/pfe-subject/{pfe-subject-id}/join/{group-id}").hasAuthority("STUDENT")
+                .antMatchers( "/api/v1/student-group/pfe-subject/remove-student/{group-id}").hasAuthority("STUDENT")
+                .antMatchers( "/api/v1/student-group/accept/{group-id}").hasAuthority("SUPERVISOR")
+                .antMatchers( "/api/v1/student-group/refuse/{group-id}").hasAuthority("SUPERVISOR")
+                .antMatchers( "/api/v1/student-group/{group-id}/add-drive/").hasAuthority("STUDENT")
+                .antMatchers( "/api/v1/student-group/{group-id}/publish-drive-link/").hasAuthority("SUPERVISOR")
+                .antMatchers( "/api/v1/student-group/student/{student-id}").permitAll()
+                .antMatchers( "/api/v1/student-group/group/{student-group-id}").authenticated()
+                .antMatchers( "/api/v1/supervisor/**").permitAll()
+                .antMatchers( "/api/v1/university/**").permitAll()
                 .and().addFilter(customAuthenticationFilter)
                 .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 
