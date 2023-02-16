@@ -239,7 +239,9 @@ public class StudentGroupService {
             }
         }
 
-        studentGroup.getStudents().forEach(student -> {
+        List<AppUser> students = new ArrayList<>(studentGroup.getStudents());
+
+        students.forEach(student -> {
             emailService.sendEmail(student.getEmail(), EmailService.buildGroupHasBeenAcceptedEmail(
                             student.getFirstName(),
                             student.getLastName(),

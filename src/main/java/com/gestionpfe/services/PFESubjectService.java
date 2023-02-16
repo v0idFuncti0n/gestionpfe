@@ -79,11 +79,11 @@ public class PFESubjectService {
     }
 
     public List<PFESubject> findByKeyword(String keyword) {
-        return pfeSubjectRepository.findPFESubjectBySubjectContainsOrSupervisor_FirstNameContainsOrSupervisor_LastNameContainsOrderById(keyword, keyword, keyword);
+        return pfeSubjectRepository.findPFESubjectBySubjectContainsOrSupervisor_FirstNameContainsOrSupervisor_LastNameContainsOrderByIdAsc(keyword, keyword, keyword);
     }
 
     public List<PFESubject> findByUniversity(Long universityId) {
-        return pfeSubjectRepository.findPFESubjectBySupervisor_Department_Establishment_University_IdOrderById(universityId);
+        return pfeSubjectRepository.findPFESubjectBySupervisor_Department_Establishment_University_IdOrderByIdAsc(universityId);
     }
 
     public List<PFESubject> findByUniversityAndKeyword(Long universityId, String keyword) {
@@ -97,7 +97,7 @@ public class PFESubjectService {
     }
 
     public List<PFESubject> findByEstablishment(Long establishmentId) {
-        return pfeSubjectRepository.findPFESubjectBySupervisor_Department_Establishment_IdOrderById(establishmentId);
+        return pfeSubjectRepository.findPFESubjectBySupervisor_Department_Establishment_IdOrderByIdAsc(establishmentId);
     }
 
     public List<PFESubject> findByEstablishmentAndKeyword(Long establishmentId, String keyword) {
@@ -111,7 +111,7 @@ public class PFESubjectService {
     }
 
     public List<PFESubject> findByDepartment(Long departmentId) {
-        return pfeSubjectRepository.findPFESubjectBySupervisor_Department_IdOrderById(departmentId);
+        return pfeSubjectRepository.findPFESubjectBySupervisor_Department_IdOrderByIdAsc(departmentId);
     }
 
     public List<PFESubject> findByDepartmentAndKeyword(Long departmentId, String keyword) {

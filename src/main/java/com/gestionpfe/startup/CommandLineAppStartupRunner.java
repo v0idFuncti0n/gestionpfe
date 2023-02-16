@@ -41,20 +41,23 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        createUniversities();
+        if (true) {
+            createUniversities();
 
-        createEstablishments();
+            createEstablishments();
 
-        createDepartments();
+            createDepartments();
 
-        createBranches();
+            createBranches();
 
-        createStudentDomain();
-        createSupervisorDomain();
+            createStudentDomain();
+            createSupervisorDomain();
 
-        createDefaultStudentUser();
-        createDefaultSupervisorUsers();
-        createDefaultAdminUsers();
+            createDefaultStudentUser();
+            createDefaultSupervisorUsers();
+            createDefaultAdminUsers();
+        }
+
     }
 
     public void createUniversities() {
@@ -159,8 +162,8 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
         });
 
         AppUser supervisor = new AppUser("Youssef",
-                "Bajm3a",
-                "lakchouchanas@gmail.com",
+                "Benani",
+                "youssef.benani@uae.ac.ma",
                 passwordEncoder.encode("password"),
                 departmentInformatique,
                 AppUserRole.SUPERVISOR,
@@ -168,17 +171,17 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
         appUserRepository.save(supervisor);
 
         supervisor = new AppUser("Ahmed",
-                "Bou3aza",
-                "ahmed.bou3aza@uae.ac.ma",
+                "Bakkali",
+                "ahmed.bakkali@uae.ac.ma",
                 passwordEncoder.encode("password"),
                 departmentInformatique,
                 AppUserRole.SUPERVISOR,
                 true);
         appUserRepository.save(supervisor);
 
-        supervisor = new AppUser("Ahmed",
-                "Boo",
-                "ahmed.boo@uae.ac.ma",
+        supervisor = new AppUser("Said",
+                "Elbarriri",
+                "said.elbarriri@uae.ac.ma",
                 passwordEncoder.encode("password"),
                 departmentInformatiqueEST,
                 AppUserRole.SUPERVISOR,
@@ -200,16 +203,15 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
         Branch smi = branchRepository.findBranchByName("SMI").orElseThrow(() -> {
             throw new BranchException("branch not found");
         });
-        log.error("{}", smi);
-        AppUser student = new AppUser("170010060",
-                "Anas",
-                "Lakchouch",
-                "anas.lakchouch@etu.uae.ac.ma",
-                passwordEncoder.encode("password"),
-                smi,
-                AppUserRole.STUDENT,
-                true);
-        appUserRepository.save(student);
+//        AppUser student = new AppUser("170010060",
+//                "Anas",
+//                "Lakchouch",
+//                "anas.lakchouch@etu.uae.ac.ma",
+//                passwordEncoder.encode("password"),
+//                smi,
+//                AppUserRole.STUDENT,
+//                true);
+//        appUserRepository.save(student);
 
         log.error("{}", smi);
         AppUser student2 = new AppUser("170010061",

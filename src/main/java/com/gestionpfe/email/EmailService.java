@@ -38,7 +38,7 @@ public class EmailService implements EmailSender {
     @Override
     @Async
     public void sendEmail(String to, String email, String subject) {
-        boolean isEnabled = false;
+        boolean isEnabled = true;
         if (!isEnabled) {
             return;
         }

@@ -14,9 +14,9 @@ public interface PFESubjectRepository extends CrudRepository<PFESubject, Long> {
 
     List<PFESubject> findBySupervisor(AppUser supervisor);
 
-    List<PFESubject> findPFESubjectBySubjectContainsOrSupervisor_FirstNameContainsOrSupervisor_LastNameContainsOrderById(String keyword1, String keyword2, String keyword3);
-    List<PFESubject> findPFESubjectBySupervisor_Department_Establishment_University_IdOrderById(Long universityId);
+    List<PFESubject> findPFESubjectBySubjectContainsOrSupervisor_FirstNameContainsOrSupervisor_LastNameContainsOrderByIdAsc(String keyword1, String keyword2, String keyword3);
+    List<PFESubject> findPFESubjectBySupervisor_Department_Establishment_University_IdOrderByIdAsc(Long universityId);
 
-    List<PFESubject> findPFESubjectBySupervisor_Department_Establishment_IdOrderById(Long establishmentId);
-    List<PFESubject> findPFESubjectBySupervisor_Department_IdOrderById(Long departmentId);
+    List<PFESubject> findPFESubjectBySupervisor_Department_Establishment_IdOrderByIdAsc(Long establishmentId);
+    List<PFESubject> findPFESubjectBySupervisor_Department_IdOrderByIdAsc(Long departmentId);
 }
